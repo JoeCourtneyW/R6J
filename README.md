@@ -9,7 +9,7 @@ TODO
 ## Using the API
 To begin, you must grab an instance of the R6J class, from there, you can query for players and grab their stats
 
-'''Java
+```Java
 public class Example {
 
     public static void main(String[] args){
@@ -23,7 +23,7 @@ public class Example {
 
     }
 }
-'''
+```
 
 ## Development
 R6J is still very much under development, if you have any issues with the code or want to suggest something, submit a pull request and I'll see it
