@@ -5,9 +5,12 @@ public enum Weapon {
     SUBMACHINE_GUN(1, "Submachine Gun"),
     MARKSMAN_RIFLE(2, "Marksman Rifle"),
     SHOTGUN(3, "Shotgun"),
-    HANDGUN(4, "Handgun"),
-    LIGHT_MACHINE_GUN(5, "Light Machine Gun"),
-    MACHINE_PISTOL(6, "Machine Pistol");
+    SNIPER(4, "Sniper"),
+    HANDGUN(5, "Handgun"),
+    LIGHT_MACHINE_GUN(6, "Light Machine Gun"),
+    MACHINE_PISTOL(7, "Machine Pistol"),
+    SHIELD(8, "Shield"),
+    LAUNCHER(9, "Launcher");
 
     private int weaponId;
     private String name;

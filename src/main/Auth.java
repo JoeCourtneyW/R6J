@@ -5,49 +5,70 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import util.HttpUtil;
 
+import javax.security.sasl.AuthenticationException;
+import java.io.IOException;
+import java.text.ParsePosition;
+import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.util.Base64;
+import java.util.Date;
 
 public class Auth {
     private static final String RAINBOW_SIX_APPID = "39baebad-39e5-4552-8c25-2c9b919064e2";
+    private static final SimpleDateFormat EXPIRATION_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSSSS'Z'");
+
+    private String auth_token;
+
+
     private String key;
     private String sessionId;
-    private Instant expiration; //TODO: Don't let the session expire, and don't let the user make a request on an expired token
+    private Instant expiration;
 
-    private Auth(String key, String sessionId, Instant expiration) {
-        this.key = key;
-        this.sessionId = sessionId;
-        this.expiration = expiration;
+    private Auth(String auth_token){
+        this.auth_token = auth_token;
+        ObjectNode post_body = new ObjectMapper().createObjectNode().put("rememberMe", true);
+        JsonNode response;
+        try {
+            response = HttpUtil.readJsonInputStream(HttpUtil.post(HttpUtil.grabConnection("https://connect.ubi.com/ubiservices/v2/profiles/sessions"), post_body.toString(),
+                    "Ubi-AppId", RAINBOW_SIX_APPID,
+                    "Authorization", "Basic " + auth_token));
+            if(response == null)
+                throw new IOException();
+            System.out.println("Authorized successfully");
+
+            Date expiration_date = EXPIRATION_FORMAT.parse(response.get("expiration").asText(), new ParsePosition(0));
+
+            this.key = response.get("ticket").asText();
+            this.sessionId = response.get("sessionId").asText();
+            this.expiration = expiration_date.toInstant();
+        }catch(IOException e){
+            System.out.println("Failed to retrieve session token with the given credentials");
+        }
     }
 
     public Auth(String email, String password) {
-        String auth_token = getBasicToken(email, password);
-        ObjectNode post_body = new ObjectMapper().createObjectNode().put("rememberMe", true);
-        JsonNode response = HttpUtil.readJsonInputStream(HttpUtil.post(HttpUtil.grabConnection("https://connect.ubi.com/ubiservices/v2/profiles/sessions"), post_body.toString(),
-                "Ubi-AppId", RAINBOW_SIX_APPID,
-                "Authorization", "Basic " + auth_token));
-        if(response.isNull()) {
-            System.out.println("Authorization failed. Exiting.");
-            System.exit(0);
-        }
-        System.out.println("Authorized successfully: Continuing");
-        new Auth(response.get("content").get("ticket").asText(),
-                response.get("content").get("sessionId").asText(),
-                Instant.parse(response.get("content").get("expiration").asText()));
+        new Auth(getBasicToken(email, password));
     }
 
-    public void updateSession(){ //TODO: Run this if the session is expired when attempting to authenticate
+    public void updateSession(){
+        Auth new_auth = new Auth(auth_token);
 
+        this.key = new_auth.key;
+        this.sessionId = new_auth.sessionId;
+        this.expiration = new_auth.expiration;
     }
 
     public JsonNode authorizedGet(String url, String... parameters){
+
         if(expiration.isBefore(Instant.now())){
-            new Auth("", "");
+            System.out.println("Session expired, attempting to authenticate again");
+            updateSession();
         }
+
         return HttpUtil.readJsonInputStream(HttpUtil.get(HttpUtil.grabConnection(url, parameters),
+                "Authorization", "Ubi_v1 t=" + key,
                 "Ubi-AppId", RAINBOW_SIX_APPID,
                 "Ubi-SessionId", sessionId,
-                "Authorization", "Ubi_v1 t= " + key,
                 "Connection", "keep-alive"));
     }
     public JsonNode get(String url, String... parameters){

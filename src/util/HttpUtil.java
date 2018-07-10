@@ -27,8 +27,13 @@ public class HttpUtil {
             connection.setRequestProperty("Content-Type",
                     "application/json");
 
+            for(int i = 0; i < headers.length; i+=2){
+                connection.setRequestProperty(headers[i], headers[i+1]);
+            }
+
             connection.setDoOutput(true);
             connection.setUseCaches(false);
+
 
             return connection.getInputStream();
         } catch(IOException e ){
@@ -44,11 +49,10 @@ public class HttpUtil {
      * @param headers An alternating key value list of the connection headers and their values
      * @return An InputStream object that contains the data returned from the POST request
      */
-    public static InputStream post(HttpURLConnection connection, String payload, String... headers){
+    public static InputStream post(HttpURLConnection connection, String payload, String... headers) throws IOException{
         if(connection == null)
             return null;
 
-        try {
             connection.setRequestMethod("POST");
             connection.setRequestProperty("Content-Type",
                     "application/json");
@@ -65,10 +69,6 @@ public class HttpUtil {
             wr.close();
 
             return connection.getInputStream();
-        } catch(IOException e ){
-            e.printStackTrace();
-            return null;
-        }
     }
     /*
     connection.setUseCaches(false);
@@ -133,13 +133,13 @@ public class HttpUtil {
      */
     public static JsonNode readJsonInputStream(InputStream input){
         if(input == null)
-            return objectMapper.createObjectNode();
+            return null;
         try {
             //Parses the JSON from the given input stream
             return objectMapper.readTree(input);
         } catch(IOException e){
             e.printStackTrace();
-            return objectMapper.createObjectNode();
+            return null;
         }
     }
 }

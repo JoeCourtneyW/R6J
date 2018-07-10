@@ -2,8 +2,9 @@ package main;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import declarations.Operator;
+import stats.OperatorStats;
 import declarations.Platform;
+import declarations.Rank;
 import declarations.Region;
 
 import java.io.IOException;
@@ -16,8 +17,6 @@ import java.util.StringJoiner;
 public class R6Player {
 
     private R6J api;
-
-    private Instant creation; //TODO: Invalidate data in cache if creation is too far away from current time
 
     private String profileId;
     private String userId;
@@ -33,11 +32,13 @@ public class R6Player {
     private int ranked_losses;
     private int rank;
     private int max_rank;
+    private double mmr;
+    private double max_mmr;
     private double skill;
     private double skill_stdev;
 
-    private HashMap<String, Operator> operators;
-    private Operator[] sortedOperators;
+    private HashMap<String, OperatorStats> operators;
+    private OperatorStats[] sortedOperators;
 
     private int kills;
     private int deaths;
@@ -71,17 +72,13 @@ public class R6Player {
         this.idOnPlatform = idOnPlatform;
         this.nameOnPlatform = nameOnPlatform;
         this.platform = platform;
-        loadGeneral();
-        loadGamemodes();
-        loadLevel();
-        loadOperators();
     }
 
 
     /**
      * Loads the player's level, amount of xp, and they're lootbox probability
      */
-    public void loadLevel(){
+    public void loadLevelXpAndLootbox(){
         JsonNode response = api.getAuthenticator().authorizedGet("https://public-ubiservices.ubi.com/v1/spaces/" + platform.getSpaceId() + "/sandboxes/"
                 + platform.getUrl() + "/r6playerprofile/playerprofile/progressions",
                 "profile_ids", profileId);
@@ -93,12 +90,12 @@ public class R6Player {
 
     /**
      * Load's the player's stats involved with their rank: Abandons, Ranked Wins,
-     * Ranked Losses, declarations.Rank, Max declarations.Rank, Skill, and Skill Standard Deviation
+     * Ranked Losses, Rank, Max Rank, Skill, and Skill Standard Deviation
      *
      * @param region The region which the player is on, use NA if not sure
      * @param season The season that you want the player's stats from, use -1 if not sure
      */
-    public void loadRank(Region region, int season) {
+    public void loadRankedStats(Region region, int season) {
         JsonNode response = api.getAuthenticator().authorizedGet("https://public-ubiservices.ubi.com/v1/spaces/" + platform.getSpaceId() + "/sandboxes/"
                 + platform.getUrl() + "/r6karma/players",
                 "board_id", "pvp_ranked",
@@ -111,6 +108,8 @@ public class R6Player {
         this.ranked_losses = player.get("losses").asInt();
         this.rank = player.get("rank").asInt();
         this.max_rank = player.get("max_rank").asInt();
+        this.mmr = player.get("mmr").asDouble();
+        this.max_mmr = player.get("max_mmr").asDouble();
         this.skill = player.get("skill_mean").asDouble();
         this.skill_stdev = player.get("skill_stdev").asDouble();
 
@@ -118,18 +117,18 @@ public class R6Player {
 
     /**
      * Load's the player's stats involved with their rank: Abandons, Ranked Wins,
-     * Ranked Losses, declarations.Rank, Max declarations.Rank, Skill, and Skill Standard Deviation
+     * Ranked Losses, Rank, Max Rank, Skill, and Skill Standard Deviation
      *
      * @param region The region which the player is on, use NA if not sure
      */
-    public void loadRank(Region region){
-        loadRank(region, -1);
+    public void loadRankedStats(Region region){
+        loadRankedStats(region, -1);
     }
 
     /**
      * Loads the player's general stats
      */
-    public void loadGeneral() {
+    public void loadGeneralStats() {
         JsonNode stats = fetchStatistics("generalpvp_timeplayed", "generalpvp_matchplayed", "generalpvp_matchwon",
                 "generalpvp_matchlost", "generalpvp_kills", "generalpvp_death",
                 "generalpvp_bullethit", "generalpvp_bulletfired", "generalpvp_killassists",
@@ -139,7 +138,6 @@ public class R6Player {
                 "generalpvp_rappelbreach", "generalpvp_distancetravelled", "generalpvp_revivedenied",
                 "generalpvp_dbno", "generalpvp_gadgetdestroy", "generalpvp_blindkills");
         String stat = "generalpvp_";
-        System.out.println(stats.toString());
         this.deaths = stats.get(stat + "death" + ":infinite").asInt();
         this.kills = stats.get(stat + "kills" + ":infinite").asInt();
         this.wins = stats.get(stat + "matchwon" + ":infinite").asInt();
@@ -174,11 +172,11 @@ public class R6Player {
      * Loads the player's operator statistics, including kills, deaths,
      * gadget kills, and other operator specific statistics
      */
-    public void loadOperators(){
+    public void loadOperatorStats(){
         String statistics = "operatorpvp_kills,operatorpvp_death,operatorpvp_roundwon,operatorpvp_roundlost,operatorpvp_meleekills,operatorpvp_totalxp,operatorpvp_headshot,operatorpvp_timeplayed,operatorpvp_dbno";
         StringJoiner operatorsStringJoiner = new StringJoiner(",");
 
-        JsonNode defs = Operator.OPERATOR_DEFS;
+        JsonNode defs = R6J.OPERATOR_DEFS;
         for(JsonNode operatorDef : defs){
             operatorsStringJoiner.add(operatorDef.get("uniqueStatistic").get("pvp").get("statisticId").asText().split(":")[0]);
         }
@@ -188,7 +186,7 @@ public class R6Player {
         operators = new HashMap<>();
         for(JsonNode operator : defs){
             if(response.get("operatorpvp_timeplayed:" + operator.get("index").asText() + ":infinite") != null) { //If the player has time on the operator
-                operators.put(operator.get("id").asText(), new Operator(capitalize(operator.get("id").asText()), getPvpNode(response, operator, "kills").asInt(),
+                operators.put(operator.get("id").asText(), new OperatorStats(capitalize(operator.get("id").asText()), getPvpNode(response, operator, "kills").asInt(),
                         getPvpNode(response, operator, "kills").asInt(), getPvpNode(response, operator, "roundwon").asInt(),
                         getPvpNode(response, operator, "roundlost").asInt(), getPvpNode(response, operator, "headshot").asInt(),
                         getPvpNode(response, operator, "meleekills").asInt(), getPvpNode(response, operator, "dbno").asInt(),
@@ -216,7 +214,7 @@ public class R6Player {
     /**
      * Loads the player's match statistics based on gamemode: Matches Won, Matches Lost, Matches Played
      */
-    public void loadGamemodes(){
+    public void loadGamemodeStats(){
         JsonNode stats = fetchStatistics("secureareapvp_matchwon", "secureareapvp_matchlost", "secureareapvp_matchplayed",
                 "secureareapvp_bestscore", "rescuehostagepvp_matchwon", "rescuehostagepvp_matchlost",
                 "rescuehostagepvp_matchplayed", "rescuehostagepvp_bestscore", "plantbombpvp_matchwon",
@@ -240,11 +238,9 @@ public class R6Player {
 
     /**
      *
-     * @return A Map containing the player's operator statistics; Key = declarations.Operator Name in lowercase
+     * @return A Map containing the player's operator statistics; Key = Operator Name in lowercase
      */
-    public Map<String, Operator> getOperators() {
-        if(operators == null)
-            loadOperators();
+    public Map<String, OperatorStats> getOperators() {
         return operators;
     }
 
@@ -252,9 +248,9 @@ public class R6Player {
      *
      * @return A sorted array of the player's operator statistics based on kills
      */
-    public Operator[] getSortedOperators() {
+    public OperatorStats[] getSortedOperators() {
         if(sortedOperators == null){
-            Operator[] sortedOps = getOperators().values().toArray(new Operator[0]);
+            OperatorStats[] sortedOps = getOperators().values().toArray(new OperatorStats[0]);
             Arrays.sort(sortedOps);
             sortedOperators = sortedOps;
         }
@@ -267,8 +263,8 @@ public class R6Player {
      *
      * @return The operator statistic wrapper for the top operator based on kills
      */
-    public Operator getTopOperator(String side) {
-        for(Operator operator : getSortedOperators()) {
+    public OperatorStats getTopOperator(String side) {
+        for(OperatorStats operator : getSortedOperators()) {
             if(operator.getSide().equalsIgnoreCase(side)){
                 return operator;
             }
@@ -284,7 +280,7 @@ public class R6Player {
         return profileId;
     }
 
-    public String getNameOnPlatform() {
+    public String getName() {
         return nameOnPlatform;
     }
 
@@ -312,12 +308,20 @@ public class R6Player {
         return ranked_losses;
     }
 
-    public int getRank() {
-        return rank;
+    public Rank getRank() {
+        return Rank.from(rank);
     }
 
-    public int getMaxRank() {
-        return max_rank;
+    public Rank getMaxRank() {
+        return Rank.from(max_rank);
+    }
+
+    public double getMmr() {
+        return mmr;
+    }
+
+    public double getMaxMmr() {
+        return max_mmr;
     }
 
     public double getSkill() {
@@ -432,4 +436,69 @@ public class R6Player {
         return new R6Player(api, player.get("profileId").asText(), player.get("userId").asText(),
                 player.get("idOnPlatform").asText(), player.get("nameOnPlatform").asText(), Platform.getByName(player.get("platformType").asText()));
     }
+    String[] STATS = //Grabbed this from another api, TODO: Use this and load all these stats at one time instead of loading them all separately
+    {
+        "casualpvp_kills",
+                "casualpvp_death",
+                "casualpvp_matchlost",
+                "casualpvp_matchplayed",
+                "casualpvp_matchwon",
+                "casualpvp_timeplayed",
+                "generalpvp_bulletfired",
+                "generalpvp_bullethit",
+                "generalpvp_headshot",
+                "generalpvp_death",
+                "generalpvp_killassists",
+                "generalpvp_kills",
+                "generalpvp_matchlost",
+                "generalpvp_matchplayed",
+                "generalpvp_matchwon",
+                "generalpvp_meleekills",
+                "generalpvp_penetrationkills",
+                "generalpvp_revive",
+                "generalpvp_timeplayed",
+                "rankedpvp_kills",
+                "rankedpvp_death",
+                "rankedpvp_matchlost",
+                "rankedpvp_matchplayed",
+                "rankedpvp_matchwon",
+                "rankedpvp_timeplayed",
+                "secureareapvp_bestscore",
+                "secureareapvp_matchlost",
+                "secureareapvp_matchplayed",
+                "secureareapvp_matchwon",
+                "secureareapvp_timeplayed",
+                "rescuehostagepvp_bestscore",
+                "rescuehostagepvp_matchlost",
+                "rescuehostagepvp_matchplayed",
+                "rescuehostagepvp_matchwon",
+                "rescuehostagepvp_timeplayed",
+                "plantbombpvp_bestscore",
+                "plantbombpvp_matchlost",
+                "plantbombpvp_matchplayed",
+                "plantbombpvp_matchwon",
+                "plantbombpvp_timeplayed",
+                "weapontypepvp_headshot",
+                "weapontypepvp_bulletfired",
+                "weapontypepvp_bullethit",
+                "weapontypepvp_kills",
+                "operatorpvp_kills",
+                "operatorpvp_death",
+                "operatorpvp_roundwon",
+                "operatorpvp_roundlost",
+                "operatorpvp_timeplayed",
+
+                "generalpvp_blindkills",
+                "generalpvp_dbno",
+                "generalpvp_dbnoassists",
+                "generalpvp_gadgetdestroy",
+                "generalpvp_hostagedefense",
+                "generalpvp_hostagerescue",
+                "generalpvp_rappelbreach",
+                "generalpvp_revivedenied",
+                "generalpvp_serveraggression",
+                "generalpvp_serverdefender",
+                "generalpvp_servershacked",
+                "generalpvp_suicide"
+    };
 }

@@ -1,22 +1,9 @@
-package declarations;
+package stats;
 
-import com.fasterxml.jackson.databind.JsonNode;
 
-public class Operator implements Comparable<Operator>{
+public class OperatorStats implements Comparable<OperatorStats>{
 
-    public static final String[] OPERATOR_NAMES = {
-        "ASH", "ALIBI", "BANDIT", "BUCK", "BLACKBEARD",
-            "BLITZ", "CASTLE", "CÃPITAO", "CAVEIRA",
-            "DOC", "DOKKAEBI", "ECHO", "ELA", "FINKA",
-            "FROST", "FUZE", "GLAZ", "HIBANA", "IQ",
-            "JACKAL", "JÄGER", "KAPKAN", "LESION",
-            "LION", "MAESTRO", "MIRA", "MONTAGNE",
-            "MUTE", "PULSE", "ROOK", "SLEDGE", "SMOKE",
-            "TACHANKA", "THATCHER", "THERMITE", "TWITCH",
-            "VALKYRIE", "VIGIL", "YING", "ZOFIA"
-    };
 
-    public static JsonNode OPERATOR_DEFS;
     private String name;
     private String statistic_name;
     private int statistic_count;
@@ -32,9 +19,9 @@ public class Operator implements Comparable<Operator>{
     private int xp;
     private long timeplayed;
 
-    public Operator(String name, int kills, int death, int roundwon, int roundlost,
-                    int headshot, int meleekills, int dbno, int totalxp, long timeplayed,
-                    String __statistic_name, int statistic_count, String side){
+    public OperatorStats(String name, int kills, int death, int roundwon, int roundlost,
+                         int headshot, int meleekills, int dbno, int totalxp, long timeplayed,
+                         String __statistic_name, int statistic_count, String side){
         this.name = name;
         this.kills = kills;
         this.deaths = death;
@@ -100,7 +87,7 @@ public class Operator implements Comparable<Operator>{
 
     public String getSide() { return side; }
 
-    public int compareTo(Operator otherOperator) {
+    public int compareTo(OperatorStats otherOperator) {
         return otherOperator.getKills() - this.getKills();
     }
 }
