@@ -1,4 +1,4 @@
-package declarations;
+package main.declarations;
 
 public enum Weapon {
     ASSAULT_RIFLE(0, "Assault Rifle"),

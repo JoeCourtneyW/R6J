@@ -7,7 +7,7 @@ Version 1.0
 TODO
 
 ## Using the API
-To begin, you must grab an instance of the R6J class, from there, you can query for players and grab their stats
+To begin, you must grab an instance of the R6J class, from there, you can query for players and grab their main.stats
 
 ```Java
 public class Example {
@@ -17,7 +17,7 @@ public class Example {
 
         R6Player steve = api.getPlayer("steve", Platform.UPLAY); //Grabs a player instance of steve on UPLAY
 
-        steve.loadGeneralStats(); //You must load in which stats you want to read before attempting to read them
+        steve.loadGeneralStats(); //You must load in which main.stats you want to read before attempting to read them
 
         System.out.println("Steve's Total Kills: " + steve.getKills()); //Prints out how many kills steve has
 

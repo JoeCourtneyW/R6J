@@ -1,4 +1,4 @@
-package stats;
+package main.stats;
 
 
 public class OperatorStats implements Comparable<OperatorStats>{

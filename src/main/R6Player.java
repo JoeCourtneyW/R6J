@@ -2,13 +2,12 @@ package main;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import stats.OperatorStats;
-import declarations.Platform;
-import declarations.Rank;
-import declarations.Region;
+import main.stats.OperatorStats;
+import main.declarations.Platform;
+import main.declarations.Rank;
+import main.declarations.Region;
 
 import java.io.IOException;
-import java.time.Instant;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -23,6 +22,7 @@ public class R6Player {
     private String idOnPlatform;
     private String nameOnPlatform;
     private Platform platform;
+    private Region region;
 
     private int level;
     private int lootbox_probability;
@@ -65,24 +65,27 @@ public class R6Player {
     private int gadgets_destroyed;
     private int blind_kills;
 
-    private R6Player(R6J api, String profileId, String userId, String idOnPlatform, String nameOnPlatform, Platform platform){
+    private R6Player(R6J api, String profileId, String userId, String idOnPlatform, String nameOnPlatform, Platform platform, Region region){
         this.api = api;
         this.profileId = profileId;
         this.userId = userId;
         this.idOnPlatform = idOnPlatform;
         this.nameOnPlatform = nameOnPlatform;
         this.platform = platform;
+        this.region = region;
     }
 
 
     /**
      * Loads the player's level, amount of xp, and they're lootbox probability
      */
-    public void loadLevelXpAndLootbox(){
+    private void loadLevelXpAndLootbox(){
         JsonNode response = api.getAuthenticator().authorizedGet("https://public-ubiservices.ubi.com/v1/spaces/" + platform.getSpaceId() + "/sandboxes/"
                 + platform.getUrl() + "/r6playerprofile/playerprofile/progressions",
                 "profile_ids", profileId);
+
         JsonNode player = response.get("player_profiles").get(0);
+
         this.level = player.get("level").asInt();
         this.xp = player.get("xp").asInt();
         this.lootbox_probability = player.get("lootbox_probability").asInt();
@@ -92,10 +95,11 @@ public class R6Player {
      * Load's the player's stats involved with their rank: Abandons, Ranked Wins,
      * Ranked Losses, Rank, Max Rank, Skill, and Skill Standard Deviation
      *
-     * @param region The region which the player is on, use NA if not sure
-     * @param season The season that you want the player's stats from, use -1 if not sure
+     * Use only if you wish to load a season other than the current season
+     *
+     * @param season The season that you want the player's main.stats from, use -1 if not sure
      */
-    public void loadRankedStats(Region region, int season) {
+    public void loadRankedStats(int season) {
         JsonNode response = api.getAuthenticator().authorizedGet("https://public-ubiservices.ubi.com/v1/spaces/" + platform.getSpaceId() + "/sandboxes/"
                 + platform.getUrl() + "/r6karma/players",
                 "board_id", "pvp_ranked",
@@ -119,24 +123,15 @@ public class R6Player {
      * Load's the player's stats involved with their rank: Abandons, Ranked Wins,
      * Ranked Losses, Rank, Max Rank, Skill, and Skill Standard Deviation
      *
-     * @param region The region which the player is on, use NA if not sure
      */
-    public void loadRankedStats(Region region){
-        loadRankedStats(region, -1);
+    private void loadRankedStats(){
+        loadRankedStats(-1);
     }
 
     /**
      * Loads the player's general stats
      */
-    public void loadGeneralStats() {
-        JsonNode stats = fetchStatistics("generalpvp_timeplayed", "generalpvp_matchplayed", "generalpvp_matchwon",
-                "generalpvp_matchlost", "generalpvp_kills", "generalpvp_death",
-                "generalpvp_bullethit", "generalpvp_bulletfired", "generalpvp_killassists",
-                "generalpvp_revive", "generalpvp_headshot", "generalpvp_penetrationkills",
-                "generalpvp_meleekills", "generalpvp_dbnoassists", "generalpvp_suicide",
-                "generalpvp_barricadedeployed", "generalpvp_reinforcementdeploy", "generalpvp_totalxp",
-                "generalpvp_rappelbreach", "generalpvp_distancetravelled", "generalpvp_revivedenied",
-                "generalpvp_dbno", "generalpvp_gadgetdestroy", "generalpvp_blindkills");
+    private void loadGeneralStats(JsonNode stats) {
         String stat = "generalpvp_";
         this.deaths = stats.get(stat + "death" + ":infinite").asInt();
         this.kills = stats.get(stat + "kills" + ":infinite").asInt();
@@ -144,7 +139,7 @@ public class R6Player {
         this.losses = stats.get(stat + "matchlost" + ":infinite").asInt();
         this.penetration_kills = stats.get(stat + "penetrationkills" + ":infinite").asInt();
         this.melee_kills = stats.get(stat + "meleekills" + ":infinite").asInt();
-        //this.bullets_fired = stats.get(stat + "bulletfired" + ":infinite").asInt(); //Stat does not exist on ubi site
+        //this.bullets_fired = main.stats.get(stat + "bulletfired" + ":infinite").asInt(); //Stat does not exist on ubi site
         this.bullets_hit = stats.get(stat + "bullethit" + ":infinite").asInt();
         this.matches_played = stats.get(stat + "matchplayed" + ":infinite").asInt();
         this.assists = stats.get(stat + "killassists" + ":infinite").asInt();
@@ -158,7 +153,7 @@ public class R6Player {
         this.xp = stats.get(stat + "totalxp" + ":infinite").asInt();
         this.rappel_breaches = stats.get(stat + "rappelbreach" + ":infinite").asInt();
         this.distance_travelled = stats.get(stat + "distancetravelled" + ":infinite").asInt();
-        //this.revives_denied = stats.get(stat + "revivedenied" + ":infinite").asInt(); //Stat does not exist on ubi site
+        //this.revives_denied = main.stats.get(stat + "revivedenied" + ":infinite").asInt(); //Stat does not exist on ubi site
         this.dbnos = stats.get(stat + "dbno" + ":infinite").asInt();
         this.gadgets_destroyed = stats.get(stat + "gadgetdestroy" + ":infinite").asInt();
         this.blind_kills = stats.get(stat + "blindkills" + ":infinite").asInt();
@@ -172,27 +167,33 @@ public class R6Player {
      * Loads the player's operator statistics, including kills, deaths,
      * gadget kills, and other operator specific statistics
      */
-    public void loadOperatorStats(){
-        String statistics = "operatorpvp_kills,operatorpvp_death,operatorpvp_roundwon,operatorpvp_roundlost,operatorpvp_meleekills,operatorpvp_totalxp,operatorpvp_headshot,operatorpvp_timeplayed,operatorpvp_dbno";
+    private void loadOperatorStats(JsonNode generalStats){
         StringJoiner operatorsStringJoiner = new StringJoiner(",");
 
         JsonNode defs = R6J.OPERATOR_DEFS;
         for(JsonNode operatorDef : defs){
             operatorsStringJoiner.add(operatorDef.get("uniqueStatistic").get("pvp").get("statisticId").asText().split(":")[0]);
         }
-        statistics += "," + operatorsStringJoiner;
+        String uniqueStatisticsString = operatorsStringJoiner.toString();
+        JsonNode uniqueStats = fetchStatistics(uniqueStatisticsString);
 
-        JsonNode response = fetchStatistics(statistics);
         operators = new HashMap<>();
         for(JsonNode operator : defs){
-            if(response.get("operatorpvp_timeplayed:" + operator.get("index").asText() + ":infinite") != null) { //If the player has time on the operator
-                operators.put(operator.get("id").asText(), new OperatorStats(capitalize(operator.get("id").asText()), getPvpNode(response, operator, "kills").asInt(),
-                        getPvpNode(response, operator, "kills").asInt(), getPvpNode(response, operator, "roundwon").asInt(),
-                        getPvpNode(response, operator, "roundlost").asInt(), getPvpNode(response, operator, "headshot").asInt(),
-                        getPvpNode(response, operator, "meleekills").asInt(), getPvpNode(response, operator, "dbno").asInt(),
-                        getPvpNode(response, operator, "totalxp").asInt(), getPvpNode(response, operator, "timeplayed").asLong(),
-                        operator.get("uniqueStatistic").get("pvp").get("statisticId").asText(), getPvpNode(response, operator,
-                        operator.get("uniqueStatistic").get("pvp").get("statisticId").asText() + ":infinite").asInt(), operator.get("category").asText()));
+            if(generalStats.get("operatorpvp_timeplayed:" + operator.get("index").asText() + ":infinite") != null) { //If the player has time on the operator
+                operators.put(operator.get("id").asText(),
+                        new OperatorStats(capitalize(operator.get("id").asText()),
+                                getPvpNode(generalStats, operator, "kills").asInt(),
+                                getPvpNode(generalStats, operator, "kills").asInt(),
+                                getPvpNode(generalStats, operator, "roundwon").asInt(),
+                                getPvpNode(generalStats, operator, "roundlost").asInt(),
+                                getPvpNode(generalStats, operator, "headshot").asInt(),
+                                getPvpNode(generalStats, operator, "meleekills").asInt(),
+                                getPvpNode(generalStats, operator, "dbno").asInt(),
+                                getPvpNode(generalStats, operator, "totalxp").asInt(),
+                                getPvpNode(generalStats, operator, "timeplayed").asLong(),
+                                operator.get("uniqueStatistic").get("pvp").get("statisticId").asText(),
+                                getPvpNode(uniqueStats, operator, operator.get("uniqueStatistic").get("pvp").get("statisticId").asText() + ":infinite").asInt(),
+                                operator.get("category").asText()));
             }
         }
     }
@@ -212,15 +213,10 @@ public class R6Player {
     }
 
     /**
-     * Loads the player's match statistics based on gamemode: Matches Won, Matches Lost, Matches Played
+     * Loads the player's match statistics based on gamemode:
+     * Matches Won, Matches Lost, Matches Played, Unique Gamemode Stat, Time Played
      */
-    public void loadGamemodeStats(){
-        JsonNode stats = fetchStatistics("secureareapvp_matchwon", "secureareapvp_matchlost", "secureareapvp_matchplayed",
-                "secureareapvp_bestscore", "rescuehostagepvp_matchwon", "rescuehostagepvp_matchlost",
-                "rescuehostagepvp_matchplayed", "rescuehostagepvp_bestscore", "plantbombpvp_matchwon",
-                "plantbombpvp_matchlost", "plantbombpvp_matchplayed", "plantbombpvp_bestscore",
-                "generalpvp_servershacked", "generalpvp_serverdefender", "generalpvp_serveraggression",
-                "generalpvp_hostagerescue", "generalpvp_hostagedefense");
+    private void loadGamemodeStats(JsonNode stats){
         System.out.println(stats.toString());
     }
 
@@ -287,6 +283,8 @@ public class R6Player {
     public Platform getPlatform() {
         return platform;
     }
+
+    public Region getRegion() { return region; }
 
     public int getLevel() {
         return level;
@@ -428,15 +426,28 @@ public class R6Player {
         return blind_kills;
     }
 
-    static R6Player getPlayer(R6J api, String nameOnPlatform, Platform platform){
-        JsonNode response = api.getAuthenticator().authorizedGet("https://connect.ubi.com/ubiservices/v2/profiles",
-                "nameOnPlatform", nameOnPlatform,
-                "platformType", platform.getName());
-        JsonNode player = response.get("profiles").get(0);
-        return new R6Player(api, player.get("profileId").asText(), player.get("userId").asText(),
-                player.get("idOnPlatform").asText(), player.get("nameOnPlatform").asText(), Platform.getByName(player.get("platformType").asText()));
+
+
+    /**
+     * Loads all players stats other than level and ranked stats
+     */
+    private void loadStats() {
+        loadLevelXpAndLootbox();
+        loadRankedStats();
+
+        JsonNode stats = fetchStatistics(STATS); //Centralize the server request so we only make one and have it contain the majority of the data
+
+        loadGeneralStats(stats);
+        loadOperatorStats(stats);
+        loadGamemodeStats(stats);
+
     }
-    String[] STATS = //Grabbed this from another api, TODO: Use this and load all these stats at one time instead of loading them all separately
+
+
+    /**
+     * A large list of all the possible stat requests
+     */
+    private static final String[] STATS =
     {
         "casualpvp_kills",
                 "casualpvp_death",
@@ -501,4 +512,81 @@ public class R6Player {
                 "generalpvp_servershacked",
                 "generalpvp_suicide"
     };
+
+
+    /**
+     * Queries the NA ubisoft servers for the player based on their name
+     *
+     * @param api Your R6J object
+     * @param nameOnPlatform The current name of the user on the platform
+     * @param platform The platform the user is on
+     *
+     * @return An R6Player object containing all the data on the player
+     */
+    static R6Player getPlayer(R6J api, String nameOnPlatform, Platform platform){
+        return getPlayer(api, nameOnPlatform, platform, Region.NA);
+    }
+
+    /**
+     * GQueries the ubisoft servers for the player based on their name
+     *
+     * @param api Your R6J object
+     * @param nameOnPlatform The current name of the user on the platform
+     * @param platform The platform the user is on
+     * @param region The primary region the user plays in
+     *
+     * @return An R6Player object containing all the data on the player
+     */
+    static R6Player getPlayer(R6J api, String nameOnPlatform, Platform platform, Region region){
+        JsonNode response = api.getAuthenticator().authorizedGet("https://connect.ubi.com/ubiservices/v2/profiles",
+                "nameOnPlatform", nameOnPlatform,
+                "platformType", platform.getName());
+
+        JsonNode player = response.get("profiles").get(0);
+
+        return new R6Player(api,
+                player.get("profileId").asText(),
+                player.get("userId").asText(),
+                player.get("idOnPlatform").asText(), player.get("nameOnPlatform").asText(),
+                Platform.getByName(player.get("platformType").asText()),
+                region);
+    }
+
+    /**
+     * Queries the NA ubisoft servers for the player based on their ID
+     *
+     * @param api Your R6J object
+     * @param idOnPlatform The Id of the user on the platform
+     * @param platform The platform the user is on
+     *
+     * @return An R6Player object containing all the data on the player
+     */
+    static R6Player getPlayerById(R6J api, String idOnPlatform, Platform platform){
+        return getPlayerById(api, idOnPlatform, platform, Region.NA);
+    }
+
+    /**
+     * Queries the ubisoft servers for the player based on their ID
+     *
+     * @param api Your R6J object
+     * @param idOnPlatform The Id of the user on the platform
+     * @param platform The platform the user is on
+     * @param region The primary region the user plays in
+     *
+     * @return An R6Player object containing all the data on the player
+     */
+    static R6Player getPlayerById(R6J api, String idOnPlatform, Platform platform, Region region){
+        JsonNode response = api.getAuthenticator().authorizedGet("https://connect.ubi.com/ubiservices/v2/profiles",
+                "idOnPlatform", idOnPlatform,
+                "platformType", platform.getName());
+
+        JsonNode player = response.get("profiles").get(0);
+
+        return new R6Player(api,
+                player.get("profileId").asText(),
+                player.get("userId").asText(),
+                player.get("idOnPlatform").asText(), player.get("nameOnPlatform").asText(),
+                Platform.getByName(player.get("platformType").asText()),
+                region);
+    }
 }

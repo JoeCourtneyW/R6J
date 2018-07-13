@@ -1,4 +1,4 @@
-package declarations;
+package main.declarations;
 
 public enum Region {
     NA("ncsa"),

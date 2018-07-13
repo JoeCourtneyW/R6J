@@ -1,14 +1,12 @@
-package util;
+package main.util;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sun.istack.internal.Nullable;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
-import java.net.ProtocolException;
 import java.net.URL;
 import java.util.StringJoiner;
 
@@ -17,12 +15,17 @@ public class HttpUtil {
     //Used to parse InputStream into a JsonNode, can just use one global instance for all parsing
     private static ObjectMapper objectMapper = new ObjectMapper();
 
-    public static InputStream get(HttpURLConnection connection, String... headers){
+    /**
+     *
+     * @param connection A connection object from the grabConnection() function
+     * @param headers An alternating key value list of the connection headers and their values
+     * @return An InputStream object that contains the data returned from the GET request
+     */
+    public static InputStream get(HttpURLConnection connection, String... headers) throws IOException{
         if(connection == null){
             return null;
         }
 
-        try {
             connection.setRequestMethod("GET");
             connection.setRequestProperty("Content-Type",
                     "application/json");
@@ -36,10 +39,6 @@ public class HttpUtil {
 
 
             return connection.getInputStream();
-        } catch(IOException e ){
-            e.printStackTrace();
-            return null;
-        }
     }
 
     /**
@@ -70,28 +69,6 @@ public class HttpUtil {
 
             return connection.getInputStream();
     }
-    /*
-    connection.setUseCaches(false);
-    connection.setDoOutput(true);
-
-    //Send request
-    DataOutputStream wr = new DataOutputStream (
-        connection.getOutputStream());
-    wr.writeBytes(urlParameters);
-    wr.close();
-
-    //Get Response
-    InputStream is = connection.getInputStream();
-    BufferedReader rd = new BufferedReader(new InputStreamReader(is));
-    StringBuilder response = new StringBuilder(); // or StringBuffer if Java version 5+
-    String line;
-    while ((line = rd.readLine()) != null) {
-      response.append(line);
-      response.append('\r');
-    }
-    rd.close();
-    return response.toString();
-     */
 
     /**
      *

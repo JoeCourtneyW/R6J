@@ -1,14 +1,15 @@
 package main;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import declarations.Platform;
+import main.declarations.Platform;
+import main.declarations.Region;
 
 public class R6J {
 
 
     private Auth authenticator;
 
-    public static JsonNode OPERATOR_DEFS;
+    static JsonNode OPERATOR_DEFS;
 
     public R6J(Auth authPackage) {
         this.authenticator = authPackage;
@@ -16,8 +17,21 @@ public class R6J {
     }
 
 
-    public R6Player getPlayer(String playerName, Platform platform){
-        return R6Player.getPlayer(this, playerName, platform);
+    //TODO: Write some documentation for this class, as it is the main api class
+    public R6Player getPlayerByName(String playerName, Platform platform){
+        return getPlayerByName(playerName, platform, Region.NA);
+    }
+
+    public R6Player getPlayerByName(String playerName, Platform platform, Region region){
+        return R6Player.getPlayer(this, playerName, platform, region);
+    }
+
+    public R6Player getPlayerById(String playerId, Platform platform){
+        return getPlayerById(playerId, platform, Region.NA);
+    }
+
+    public R6Player getPlayerById(String playerId, Platform platform, Region region){
+        return R6Player.getPlayerById(this, playerId, platform);
     }
 
     public boolean playerExists(String playerName, Platform platform){

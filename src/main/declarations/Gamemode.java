@@ -1,4 +1,4 @@
-package declarations;
+package main.declarations;
 
 public enum Gamemode {
     SECURE_AREA("securearea", "Secure Area"),
