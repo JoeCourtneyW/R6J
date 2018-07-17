@@ -2,10 +2,10 @@ package test;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import main.declarations.Platform;
 import main.Auth;
 import main.R6J;
 import main.R6Player;
+import main.declarations.Platform;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -17,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ApiTest {
 
-    @Test
+    @Test()
     public void testApi() throws IOException{
 
         InputStream testCredentialsStream = ApiTest.class.getResourceAsStream("/testCredentials.json");

@@ -1,6 +1,5 @@
 package main;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import main.declarations.Platform;
 import main.declarations.Region;
 
@@ -9,58 +8,91 @@ public class R6J {
 
     private Auth authenticator;
 
-    static JsonNode OPERATOR_DEFS;
 
     public R6J(Auth authPackage) {
         this.authenticator = authPackage;
-        loadOperatorDefs();
     }
 
 
-    //TODO: Write some documentation for this class, as it is the main api class
-    public R6Player getPlayerByName(String playerName, Platform platform){
+    /**
+     * Creates an R6Player object based on the given user information, defaulting to NA region
+     *
+     * @param playerName The user's current name
+     * @param platform   The user's platform
+     *
+     * @return An R6Player object containing all the data on the player
+     */
+    public R6Player getPlayerByName(String playerName, Platform platform) {
         return getPlayerByName(playerName, platform, Region.NA);
     }
 
-    public R6Player getPlayerByName(String playerName, Platform platform, Region region){
+    /**
+     * Creates an R6Player object based on the given user information
+     *
+     * @param playerName The user's current name
+     * @param platform   The user's platform
+     * @param region     The user's primary region
+     *
+     * @return An R6Player object containing all the data on the player
+     */
+    public R6Player getPlayerByName(String playerName, Platform platform, Region region) {
         return R6Player.getPlayer(this, playerName, platform, region);
     }
 
-    public R6Player getPlayerById(String playerId, Platform platform){
+    /**
+     * Creates an R6Player object based on the given user information, defaulting to NA region
+     *
+     * @param playerId The user's profile_id
+     * @param platform The user's platform
+     *
+     * @return An R6Player object containing all the data on the player
+     */
+    public R6Player getPlayerById(String playerId, Platform platform) {
         return getPlayerById(playerId, platform, Region.NA);
     }
 
-    public R6Player getPlayerById(String playerId, Platform platform, Region region){
+    /**
+     * Creates an R6Player object based on the given user information
+     *
+     * @param playerId The user's profile_id
+     * @param platform The user's platform
+     * @param region   The user's primary region
+     *
+     * @return An R6Player object containing all the data on the player
+     */
+    public R6Player getPlayerById(String playerId, Platform platform, Region region) {
         return R6Player.getPlayerById(this, playerId, platform);
     }
 
-    public boolean playerExists(String playerName, Platform platform){
-        try {
-            R6Player.getPlayer(this, playerName, platform);
-        } catch(Exception e){
-            return false;
-        }
-        return true;
+    /**
+     * Determines if the player exists on Ubisoft servers
+     *
+     * @param playerName The user's current name
+     * @param platform   The user's platform
+     *
+     * @return Does the player exist?
+     */
+    public boolean playerExists(String playerName, Platform platform) {
+        return R6Player.playerExists(this, playerName, platform);
     }
 
-    Auth getAuthenticator(){
+    /**
+     * Determines if the player exists on Ubisoft servers
+     *
+     * @param playerId The user's profile_id
+     * @param platform The user's platform
+     *
+     * @return Does the player exist?
+     */
+    public boolean playerIdExists(String playerId, Platform platform) {
+        return R6Player.playerExists(this, playerId, platform);
+    }
+
+    /**
+     * @return The Auth object used to create the R6J object
+     */
+    Auth getAuthenticator() {
         return authenticator;
     }
-
-    private void loadOperatorDefs() {
-        OPERATOR_DEFS = getAuthenticator().get("https://ubistatic-a.akamaihd.net/0058/prod/assets/data/operators.3a2655c8.json");
-    }
-
-    public static final String[] OPERATOR_NAMES = {
-            "ASH", "ALIBI", "BANDIT", "BUCK", "BLACKBEARD",
-            "BLITZ", "CASTLE", "CÃPITAO", "CAVEIRA",
-            "DOC", "DOKKAEBI", "ECHO", "ELA", "FINKA",
-            "FROST", "FUZE", "GLAZ", "HIBANA", "IQ",
-            "JACKAL", "JÄGER", "KAPKAN", "LESION",
-            "LION", "MAESTRO", "MIRA", "MONTAGNE",
-            "MUTE", "PULSE", "ROOK", "SLEDGE", "SMOKE",
-            "TACHANKA", "THATCHER", "THERMITE", "TWITCH",
-            "VALKYRIE", "VIGIL", "YING", "ZOFIA"
-    };
 
 }

@@ -31,4 +31,8 @@ public enum Weapon {
     public Weapon getByWeaponId(int id){
         return values()[id];
     }
+
+    public String getStatisticName(String statistic) {
+        return "weapontypepvp_" + statistic + ":" + weaponId + ":infinite";
+    }
 }

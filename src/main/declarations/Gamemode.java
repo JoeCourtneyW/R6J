@@ -20,11 +20,16 @@ public enum Gamemode {
     public String getDisplayName() {
         return displayName;
     }
+
     public static Gamemode getByUbiName(String ubiName){
         for(Gamemode mode : values()){
             if(mode.getUbiName().equalsIgnoreCase(ubiName))
                 return mode;
         }
         return null;
+    }
+
+    public String getStatisticName(String statistic) {
+        return ubiName + "pvp_" + statistic + ":infinite";
     }
 }

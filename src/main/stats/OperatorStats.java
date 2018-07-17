@@ -1,48 +1,40 @@
 package main.stats;
 
 
-public class OperatorStats implements Comparable<OperatorStats>{
+import main.declarations.Operator;
+
+public class OperatorStats implements Comparable<OperatorStats> {
 
 
-    private String name;
-    private String statistic_name;
+    private Operator operator;
     private int statistic_count;
-    private String side;
 
     private int kills;
     private int deaths;
     private int wins;
     private int losses;
-    private int headshots;
     private int melees;
     private int dbnos;
     private int xp;
     private long timeplayed;
 
-    public OperatorStats(String name, int kills, int death, int roundwon, int roundlost,
-                         int headshot, int meleekills, int dbno, int totalxp, long timeplayed,
-                         String __statistic_name, int statistic_count, String side){
-        this.name = name;
+    public OperatorStats(Operator operator, int kills, int death, int roundwon, int roundlost,
+                         int meleekills, int dbno, int totalxp, long timeplayed,
+                         int statistic_count) {
+        this.operator = operator;
         this.kills = kills;
         this.deaths = death;
         this.wins = roundwon;
         this.losses = roundlost;
-        this.headshots = headshot;
         this.melees = meleekills;
         this.dbnos = dbno;
         this.xp = totalxp;
         this.timeplayed = timeplayed;
-        this.statistic_name = __statistic_name;
         this.statistic_count = statistic_count;
-        this.side = side;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public String getUniqueStatisticName() {
-        return statistic_name;
+    public Operator getOperator() {
+        return operator;
     }
 
     public int getKills() {
@@ -61,9 +53,6 @@ public class OperatorStats implements Comparable<OperatorStats>{
         return losses;
     }
 
-    public int getHeadshots() {
-        return headshots;
-    }
 
     public int getMelees() {
         return melees;
@@ -85,9 +74,7 @@ public class OperatorStats implements Comparable<OperatorStats>{
         return statistic_count;
     }
 
-    public String getSide() { return side; }
-
     public int compareTo(OperatorStats otherOperator) {
-        return otherOperator.getKills() - this.getKills();
+        return otherOperator.getKills() - getKills();
     }
 }
