@@ -2,13 +2,26 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>RainbowSixAPI</groupId>
-    <artifactId>RainbowSixAPI</artifactId>
+    <groupId>com.github.joecourtneyw</groupId>
+    <artifactId>R6J</artifactId>
     <version>1.0</version>
     <packaging>jar</packaging>
 
-    <name>RainbowSixAPI</name> <!-- Actual project name -->
-    <url>http://maven.apache.org</url>
+    <name>Rainbow Six - Java</name> <!-- Actual project name -->
+    <description>A small java wrapper for the Rainbow Six Siege API</description>
+    <url>http://github.com/JoeCourtneyW/R6J</url>
+
+    <licenses>
+        <license>
+            <name>Unlicense</name>
+            <url>http://unlicense.org</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <scm>
+        <url>https://github.com/JoeCourtneyW/R6J</url>
+    </scm>
 
     <properties> <!-- Sets the char set for the project -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

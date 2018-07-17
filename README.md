@@ -4,10 +4,10 @@ A JVM based Rainbow Six Siege API Wrapper
 Version 1.0
 
 ## Adding R6J to your project
-TODO
+TODO: Add the project to the maven central repo
 
 ## Using the API
-To begin, you must grab an instance of the R6J class, from there, you can query for players and grab their main.stats
+To begin, you must grab an instance of the R6J class, from there, you can query for players and grab their stats
 
 ```Java
 public class Example {
@@ -29,4 +29,4 @@ public class Example {
 R6J is still very much under development, if you have any issues with the code or want to suggest something, submit a pull request and I'll see it
 
 ## License
-R6J is released under the Unlicense
+R6J is released under the Unlicense, which means anyone can do anything they want with it, have at it!
