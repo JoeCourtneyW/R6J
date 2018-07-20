@@ -5,11 +5,11 @@ Version 1.0
 
 ## Adding R6J to your project
 TODO: Add the project to the maven central repo
-For now, you can download the source code and compile it yourself using 'mvn package'
-From there, you can add it to your projects build path in order to use it
+> For now, you can download the source code and compile it yourself using 'mvn package'
+> From there, you can add it to your projects build path in order to use it
 
 ## Using the API
-To begin, you must grab an instance of the R6J class, from there, you can query for players and grab their stats
+To begin, you must grab an instance of the R6J class, from there, you can query for players and grab all of their available stats
 
 ```Java
 public class Example {
@@ -28,7 +28,7 @@ public class Example {
 ```
 
 ## Development
-R6J is still very much under development, if you have any issues with the code or want to suggest something, submit a pull request and I'll see it
+R6J is still under development, if you have any issues or want to suggest something, submit a pull request
 
 ## License
 R6J is released under the Unlicense, which means anyone can do anything they want with it, have at it!
