@@ -26,7 +26,7 @@ public class Auth {
     private String sessionId; //Our session id
     private Instant expiration; //When our session id expires
 
-    private Auth(String auth_token){
+    private Auth(String auth_token) {
         this.auth_token = auth_token;
         ObjectNode post_body = new ObjectMapper().createObjectNode().put("rememberMe", true);
         JsonNode response;
@@ -37,17 +37,15 @@ public class Auth {
                                   "Ubi-AppId", RAINBOW_SIX_APPID,
                                   "Authorization", "Basic " + auth_token));
 
-            if(response == null)
-                throw new IOException();
-
-            System.out.println("Authorized successfully");
+            if (response == null)
+                throw new IOException("Null response from Ubisoft authentication endpoint");
 
             Date expiration_date = EXPIRATION_FORMAT.parse(response.get("expiration").asText(), new ParsePosition(0));
 
             this.key = response.get("ticket").asText();
             this.sessionId = response.get("sessionId").asText();
             this.expiration = expiration_date.toInstant();
-        }catch(IOException e){
+        } catch (IOException e) {
             System.out.println("Failed to retrieve session token with the given credentials");
         }
     }
@@ -59,7 +57,7 @@ public class Auth {
     /**
      * Called when the session expires, creates new auth object and grabs session id from it
      */
-    private void updateSession(){
+    private void updateSession() {
         Auth new_auth = new Auth(auth_token);
 
         this.key = new_auth.key;
@@ -77,18 +75,18 @@ public class Auth {
      */
     JsonNode authorizedGet(String url, String... parameters) {
 
-        if(expiration.isBefore(Instant.now())){
-            System.out.println("Session expired, attempting to authenticate again");
+        if (expiration.isBefore(Instant.now())) {
+            System.out.println("Session expired, attempting to reauthenticate");
             updateSession();
         }
 
         try {
             return HttpUtil.parse(HttpUtil.get(HttpUtil.connect(url, parameters),
-                    "Authorization", "Ubi_v1 t=" + key,
-                    "Ubi-AppId", RAINBOW_SIX_APPID,
-                    "Ubi-SessionId", sessionId,
-                    "Connection", "keep-alive"));
-        } catch(IOException e){
+                                               "Authorization", "Ubi_v1 t=" + key,
+                                               "Ubi-AppId", RAINBOW_SIX_APPID,
+                                               "Ubi-SessionId", sessionId,
+                                               "Connection", "keep-alive"));
+        } catch (IOException e) {
             System.out.println("Failed to process GET request to " + url);
             e.printStackTrace();
             return null;
@@ -106,7 +104,7 @@ public class Auth {
     JsonNode get(String url, String... parameters) {
         try {
             return HttpUtil.parse(HttpUtil.get(HttpUtil.connect(url, parameters)));
-        }  catch(IOException e){
+        } catch (IOException e) {
             System.out.println("Failed to process GET request to " + url);
             e.printStackTrace();
             return null;
@@ -117,7 +115,7 @@ public class Auth {
     /**
      * Builds a basic auth token from the given email and password
      *
-     * @param email Your Ubisoft email
+     * @param email    Your Ubisoft email
      * @param password Your Ubisoft password
      *
      * @return The encoded auth token

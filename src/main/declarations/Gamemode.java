@@ -8,7 +8,7 @@ public enum Gamemode {
     private String ubiName;
     private String displayName;
 
-    Gamemode(String ubiName, String displayName){
+    Gamemode(String ubiName, String displayName) {
         this.ubiName = ubiName;
         this.displayName = displayName;
     }
@@ -21,9 +21,9 @@ public enum Gamemode {
         return displayName;
     }
 
-    public static Gamemode getByUbiName(String ubiName){
-        for(Gamemode mode : values()){
-            if(mode.getUbiName().equalsIgnoreCase(ubiName))
+    public static Gamemode getByUbiName(String ubiName) {
+        for (Gamemode mode : values()) {
+            if (mode.getUbiName().equalsIgnoreCase(ubiName))
                 return mode;
         }
         return null;

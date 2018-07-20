@@ -177,7 +177,6 @@ public class R6Player {
      */
     private void loadOperatorStats(JsonNode generalStats) {
         operators = new HashMap<>(); // A map with operator names as keys, and the players OperatorStats object as the value
-        System.out.println(generalStats);
         for (Operator operator : Operator.values()) { //Loop through every operators definition
             if (generalStats.has(
                     operator.getStatisticName("timeplayed"))) { //If the player has time on the operator
@@ -217,6 +216,7 @@ public class R6Player {
             }
         }
     }
+
     /**
      * Loads the player's weapon statistics into the weapons map
      *

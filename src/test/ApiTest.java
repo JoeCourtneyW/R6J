@@ -11,14 +11,13 @@ import org.junit.jupiter.api.Test;
 import java.io.IOException;
 import java.io.InputStream;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 
 public class ApiTest {
 
     @Test()
-    public void testApi() throws IOException{
+    public void testApi() throws IOException {
 
         InputStream testCredentialsStream = ApiTest.class.getResourceAsStream("/testCredentials.json");
 
@@ -35,10 +34,7 @@ public class ApiTest {
 
         // The player we grabbed should have the name we requested
         assertEquals(credentials.get("testPlayerName").asText(), player.getName());
-
-
     }
-
 
 
 }

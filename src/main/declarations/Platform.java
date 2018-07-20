@@ -28,8 +28,8 @@ public enum Platform {
     }
 
     public static Platform getByName(String name) {
-        for(Platform platform : values()){
-            if(platform.getName().equalsIgnoreCase(name))
+        for (Platform platform : values()) {
+            if (platform.getName().equalsIgnoreCase(name))
                 return platform;
         }
         return null;

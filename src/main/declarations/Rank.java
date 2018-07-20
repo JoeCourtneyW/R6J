@@ -24,15 +24,15 @@ public enum Rank {
 
     private String displayName;
 
-    Rank(String displayName){
+    Rank(String displayName) {
         this.displayName = displayName;
     }
 
-    public String getDisplayName(){
+    public String getDisplayName() {
         return this.displayName;
     }
 
-    public static Rank from(int index){
+    public static Rank from(int index) {
         return values()[index];
     }
 }

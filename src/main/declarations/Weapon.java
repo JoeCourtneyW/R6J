@@ -15,7 +15,7 @@ public enum Weapon {
     private int weaponId;
     private String name;
 
-    Weapon(int weaponId, String name){
+    Weapon(int weaponId, String name) {
         this.weaponId = weaponId;
         this.name = name;
     }
@@ -28,7 +28,7 @@ public enum Weapon {
         return name;
     }
 
-    public Weapon getByWeaponId(int id){
+    public Weapon getByWeaponId(int id) {
         return values()[id];
     }
 
