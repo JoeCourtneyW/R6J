@@ -2,10 +2,10 @@ package test;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import main.Auth;
-import main.R6J;
-import main.R6Player;
-import main.declarations.Platform;
+import main.com.github.courtneyjoew.Auth;
+import main.com.github.courtneyjoew.R6J;
+import main.com.github.courtneyjoew.R6Player;
+import main.com.github.courtneyjoew.declarations.Platform;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;

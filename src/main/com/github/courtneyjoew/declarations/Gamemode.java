@@ -1,4 +1,4 @@
-package main.declarations;
+package main.com.github.courtneyjoew.declarations;
 
 public enum Gamemode {
     SECURE_AREA("securearea", "Secure Area"),

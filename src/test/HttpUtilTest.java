@@ -2,7 +2,7 @@ package test;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import main.util.HttpUtil;
+import main.com.github.courtneyjoew.util.HttpUtil;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;

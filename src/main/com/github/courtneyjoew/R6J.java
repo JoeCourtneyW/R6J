@@ -1,7 +1,7 @@
-package main;
+package main.com.github.courtneyjoew;
 
-import main.declarations.Platform;
-import main.declarations.Region;
+import main.com.github.courtneyjoew.declarations.Platform;
+import main.com.github.courtneyjoew.declarations.Region;
 
 public class R6J {
 

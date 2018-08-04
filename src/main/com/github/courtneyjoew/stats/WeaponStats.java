@@ -1,6 +1,6 @@
-package main.stats;
+package main.com.github.courtneyjoew.stats;
 
-import main.declarations.Weapon;
+import main.com.github.courtneyjoew.declarations.Weapon;
 
 public class WeaponStats implements Comparable<WeaponStats> {
 

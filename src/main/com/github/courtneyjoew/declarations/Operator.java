@@ -1,4 +1,4 @@
-package main.declarations;
+package main.com.github.courtneyjoew.declarations;
 
 public enum Operator {
     SMOKE("Smoke", "def", "2:1", "poisongaskill"),

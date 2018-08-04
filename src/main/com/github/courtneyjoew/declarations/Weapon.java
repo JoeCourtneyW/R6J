@@ -1,4 +1,4 @@
-package main.declarations;
+package main.com.github.courtneyjoew.declarations;
 
 public enum Weapon {
     ASSAULT_RIFLE(0, "Assault Rifle"),

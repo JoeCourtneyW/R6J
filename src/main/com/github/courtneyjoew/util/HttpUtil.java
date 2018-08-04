@@ -1,4 +1,4 @@
-package main.util;
+package main.com.github.courtneyjoew.util;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;

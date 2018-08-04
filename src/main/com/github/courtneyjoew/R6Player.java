@@ -1,10 +1,12 @@
-package main;
+package main.com.github.courtneyjoew;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.github.courtneyjoew.declarations.*;
+import main.com.github.courtneyjoew.declarations.*;
+import main.com.github.courtneyjoew.stats.GamemodeStats;
+import main.com.github.courtneyjoew.stats.OperatorStats;
+import main.com.github.courtneyjoew.stats.WeaponStats;
 import main.declarations.*;
-import main.stats.GamemodeStats;
-import main.stats.OperatorStats;
-import main.stats.WeaponStats;
 
 import java.util.*;
 

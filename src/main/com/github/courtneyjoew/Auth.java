@@ -1,9 +1,9 @@
-package main;
+package main.com.github.courtneyjoew;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import main.util.HttpUtil;
+import main.com.github.courtneyjoew.util.HttpUtil;
 
 import java.io.IOException;
 import java.text.ParsePosition;
@@ -94,7 +94,7 @@ public class Auth {
     }
 
     /**
-     * A simple HTTP get request, see main.util.HttpUtil get request
+     * A simple HTTP get request, see HttpUtil get request
      *
      * @param url        The url to query
      * @param parameters The parameters to append to the url

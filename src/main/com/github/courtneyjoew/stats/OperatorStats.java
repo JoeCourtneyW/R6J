@@ -1,7 +1,7 @@
-package main.stats;
+package main.com.github.courtneyjoew.stats;
 
 
-import main.declarations.Operator;
+import main.com.github.courtneyjoew.declarations.Operator;
 
 public class OperatorStats implements Comparable<OperatorStats> {
 

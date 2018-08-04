@@ -4,7 +4,7 @@
 
     <groupId>com.github.joecourtneyw</groupId>
     <artifactId>R6J</artifactId>
-    <version>1.0</version>
+    <version>1.0 - SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>Rainbow Six - Java</name> <!-- Actual project name -->
@@ -20,8 +20,16 @@
     </licenses>
 
     <scm>
+        <connection>scm:git:git://github.com/JoeCourtneyW/R6J.git</connection>
+        <developerConnection>scm:git:ssh://github.com:JoeCourtneyW/R6J.git</developerConnection>
         <url>https://github.com/JoeCourtneyW/R6J</url>
     </scm>
+
+    <parent>
+        <groupId>org.sonatype.oss</groupId>
+        <artifactId>oss-parent</artifactId>
+        <version>9</version>
+    </parent>
 
     <properties> <!-- Sets the char set for the project -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -49,10 +57,16 @@
             <version>5.2.0</version>
         </dependency>
     </dependencies>
+    <distributionManagement>
+        <snapshotRepository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+        </snapshotRepository>
+    </distributionManagement>
     <build>
         <resources>
             <resource>
-                <directory>src/main/resources</directory>
+                <directory>src/main/com/github/courtneyjoew/resources</directory>
                 <filtering>true</filtering>
             </resource>
         </resources>
@@ -94,6 +108,19 @@
                     </execution>
                 </executions>
             </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-gpg-plugin</artifactId>
+                <version>1.5</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-release-plugin</artifactId>
+                <version>2.4.2</version>
+            </plugin>
+
+
         </plugins>
     </build>
 </project>

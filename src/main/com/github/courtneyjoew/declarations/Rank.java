@@ -1,4 +1,4 @@
-package main.declarations;
+package main.com.github.courtneyjoew.declarations;
 
 public enum Rank {
     COPPER_4("Copper IV"),

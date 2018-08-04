@@ -1,4 +1,4 @@
-package main.declarations;
+package main.com.github.courtneyjoew.declarations;
 
 public enum Platform {
     UPLAY("uplay", "OSBOR_PC_LNCH_A", "5172a557-50b5-4665-b7db-e3f2e8c5041d"),

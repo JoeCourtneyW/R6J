@@ -1,6 +1,6 @@
-package main.stats;
+package main.com.github.courtneyjoew.stats;
 
-import main.declarations.Gamemode;
+import main.com.github.courtneyjoew.declarations.Gamemode;
 
 public class GamemodeStats implements Comparable<GamemodeStats> {
 
