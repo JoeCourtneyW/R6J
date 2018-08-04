@@ -27,3 +27,4 @@ hs_err_pid*
 .idea.*
 .idea/.name
 javadocs/*
+target/*

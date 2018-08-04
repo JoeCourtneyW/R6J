@@ -1,12 +1,10 @@
 package main.com.github.courtneyjoew;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.github.courtneyjoew.declarations.*;
 import main.com.github.courtneyjoew.declarations.*;
 import main.com.github.courtneyjoew.stats.GamemodeStats;
 import main.com.github.courtneyjoew.stats.OperatorStats;
 import main.com.github.courtneyjoew.stats.WeaponStats;
-import main.declarations.*;
 
 import java.util.*;
 
@@ -148,7 +146,7 @@ public class R6Player {
         this.penetration_kills = getStat(generalStats, stat + "penetrationkills" + ":infinite");
         this.melee_kills = getStat(generalStats, stat + "meleekills" + ":infinite");
         this.bullets_fired = getStat(generalStats,
-                                     stat + "bulletfired" + ":infinite"); //Stat does not exist on ubi site
+                stat + "bulletfired" + ":infinite"); //Stat does not exist on ubi site
         this.bullets_hit = getStat(generalStats, stat + "bullethit" + ":infinite");
         this.matches_played = getStat(generalStats, stat + "matchplayed" + ":infinite");
         this.assists = getStat(generalStats, stat + "killassists" + ":infinite");
@@ -162,7 +160,7 @@ public class R6Player {
         this.rappel_breaches = getStat(generalStats, stat + "rappelbreach" + ":infinite");
         this.distance_travelled = getStat(generalStats, stat + "distancetravelled" + ":infinite");
         this.revives_denied = getStat(generalStats,
-                                      stat + "revivedenied" + ":infinite"); //Stat does not exist on ubi site
+                stat + "revivedenied" + ":infinite"); //Stat does not exist on ubi site
         this.dbnos = getStat(generalStats, stat + "dbno" + ":infinite");
         this.gadgets_destroyed = getStat(generalStats, stat + "gadgetdestroy" + ":infinite");
         this.blind_kills = getStat(generalStats, stat + "blindkills" + ":infinite");
@@ -183,17 +181,17 @@ public class R6Player {
             if (generalStats.has(
                     operator.getStatisticName("timeplayed"))) { //If the player has time on the operator
                 operators.put(operator,
-                              new OperatorStats(operator,
-                                                getStat(generalStats, operator.getStatisticName("kills")),
-                                                getStat(generalStats, operator.getStatisticName("death")),
-                                                getStat(generalStats, operator.getStatisticName("roundwon")),
-                                                getStat(generalStats, operator.getStatisticName("roundlost")),
-                                                getStat(generalStats, operator.getStatisticName("meleekills")),
-                                                getStat(generalStats, operator.getStatisticName("dbno")),
-                                                getStat(generalStats, operator.getStatisticName("totalxp")),
-                                                getStat(generalStats, operator.getStatisticName("timeplayed")),
-                                                getStat(generalStats,
-                                                        operator.getStatisticName(operator.getGadget()))));
+                        new OperatorStats(operator,
+                                getStat(generalStats, operator.getStatisticName("kills")),
+                                getStat(generalStats, operator.getStatisticName("death")),
+                                getStat(generalStats, operator.getStatisticName("roundwon")),
+                                getStat(generalStats, operator.getStatisticName("roundlost")),
+                                getStat(generalStats, operator.getStatisticName("meleekills")),
+                                getStat(generalStats, operator.getStatisticName("dbno")),
+                                getStat(generalStats, operator.getStatisticName("totalxp")),
+                                getStat(generalStats, operator.getStatisticName("timeplayed")),
+                                getStat(generalStats,
+                                        operator.getStatisticName(operator.getGadget()))));
             }
         }
     }
@@ -209,11 +207,11 @@ public class R6Player {
         for (Gamemode gamemode : Gamemode.values()) {
             if (generalStats.has(gamemode.getStatisticName("timeplayed"))) {
                 gamemodes.put(gamemode,
-                              new GamemodeStats(gamemode,
-                                                getStat(generalStats, gamemode.getStatisticName("matchwon")),
-                                                getStat(generalStats, gamemode.getStatisticName("matchlost")),
-                                                getStat(generalStats, gamemode.getStatisticName("matchplayed")),
-                                                getStat(generalStats, gamemode.getStatisticName("bestscore"))));
+                        new GamemodeStats(gamemode,
+                                getStat(generalStats, gamemode.getStatisticName("matchwon")),
+                                getStat(generalStats, gamemode.getStatisticName("matchlost")),
+                                getStat(generalStats, gamemode.getStatisticName("matchplayed")),
+                                getStat(generalStats, gamemode.getStatisticName("bestscore"))));
 
             }
         }
@@ -230,11 +228,11 @@ public class R6Player {
         for (Weapon weapon : Weapon.values()) {
             if (generalStats.has(weapon.getStatisticName("kills"))) {
                 weapons.put(weapon,
-                            new WeaponStats(weapon,
-                                            getStat(generalStats, weapon.getStatisticName("kills")),
-                                            getStat(generalStats, weapon.getStatisticName("headshot")),
-                                            getStat(generalStats, weapon.getStatisticName("bulletfired")),
-                                            getStat(generalStats, weapon.getStatisticName("bullethit"))));
+                        new WeaponStats(weapon,
+                                getStat(generalStats, weapon.getStatisticName("kills")),
+                                getStat(generalStats, weapon.getStatisticName("headshot")),
+                                getStat(generalStats, weapon.getStatisticName("bulletfired")),
+                                getStat(generalStats, weapon.getStatisticName("bullethit"))));
             }
         }
     }
@@ -260,7 +258,6 @@ public class R6Player {
 
     /**
      * @param category Which side you wish to grab the top operator from: "atk" or "def"
-     *
      * @return The operator statistic wrapper for the top operator based on kills
      */
     public OperatorStats getTopOperator(String category) {
@@ -501,7 +498,6 @@ public class R6Player {
      *
      * @param node      The JsonNode to grab from
      * @param stat_name The stat to get
-     *
      * @return The int value of the stat, 0 if it doesn't exist
      */
     private int getStat(JsonNode node, String stat_name) {
@@ -516,7 +512,6 @@ public class R6Player {
      * Fetches all statistics in the list from the general ubisoft statistics endpoint
      *
      * @param statistics A list of all statistics to fetch
-     *
      * @return A JsonNode object with the data returned by the server
      */
     private JsonNode fetchStatistics(List<String> statistics) {
@@ -616,7 +611,6 @@ public class R6Player {
      * @param api            Your R6J object
      * @param nameOnPlatform The user's current name
      * @param platform       The user's platform
-     *
      * @return An R6Player object containing all the data on the player
      */
     static R6Player getPlayer(R6J api, String nameOnPlatform, Platform platform) {
@@ -630,7 +624,6 @@ public class R6Player {
      * @param nameOnPlatform The user's current name
      * @param platform       The user's platform
      * @param region         The user's primary region
-     *
      * @return An R6Player object containing all the data on the player
      */
     static R6Player getPlayer(R6J api, String nameOnPlatform, Platform platform, Region region) {
@@ -642,11 +635,11 @@ public class R6Player {
         JsonNode player = response.get("profiles").get(0);
 
         return new R6Player(api,
-                            player.get("profileId").asText(),
-                            player.get("userId").asText(),
-                            player.get("idOnPlatform").asText(), player.get("nameOnPlatform").asText(),
-                            Platform.getByName(player.get("platformType").asText()),
-                            region);
+                player.get("profileId").asText(),
+                player.get("userId").asText(),
+                player.get("idOnPlatform").asText(), player.get("nameOnPlatform").asText(),
+                Platform.getByName(player.get("platformType").asText()),
+                region);
     }
 
     /**
@@ -655,7 +648,6 @@ public class R6Player {
      * @param api          Your R6J object
      * @param idOnPlatform The user's profile_id
      * @param platform     The user's platform
-     *
      * @return An R6Player object containing all the data on the player
      */
     static R6Player getPlayerById(R6J api, String idOnPlatform, Platform platform) {
@@ -669,7 +661,6 @@ public class R6Player {
      * @param idOnPlatform The user's profile_id
      * @param platform     The user's platform
      * @param region       The user's primary region
-     *
      * @return An R6Player object containing all the data on the player
      */
     static R6Player getPlayerById(R6J api, String idOnPlatform, Platform platform, Region region) {
@@ -681,11 +672,11 @@ public class R6Player {
         JsonNode player = response.get("profiles").get(0);
 
         return new R6Player(api,
-                            player.get("profileId").asText(),
-                            player.get("userId").asText(),
-                            player.get("idOnPlatform").asText(), player.get("nameOnPlatform").asText(),
-                            Platform.getByName(player.get("platformType").asText()),
-                            region);
+                player.get("profileId").asText(),
+                player.get("userId").asText(),
+                player.get("idOnPlatform").asText(), player.get("nameOnPlatform").asText(),
+                Platform.getByName(player.get("platformType").asText()),
+                region);
     }
 
     /**
@@ -694,7 +685,6 @@ public class R6Player {
      * @param api            Your R6J object
      * @param nameOnPlatform The user's current name
      * @param platform       The user's platform
-     *
      * @return Does the player exist?
      */
     static boolean playerExists(R6J api, String nameOnPlatform, Platform platform) {
@@ -711,7 +701,6 @@ public class R6Player {
      * @param api          Your R6J object
      * @param idOnPlatform The user's profile_id
      * @param platform     The user's platform
-     *
      * @return Does the player exist?
      */
     static boolean playerIdExists(R6J api, String idOnPlatform, Platform platform) {
