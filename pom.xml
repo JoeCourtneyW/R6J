@@ -57,12 +57,6 @@
             <version>5.2.0</version>
         </dependency>
     </dependencies>
-    <distributionManagement>
-        <snapshotRepository>
-            <id>ossrh</id>
-            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-        </snapshotRepository>
-    </distributionManagement>
     <build>
         <resources>
             <resource>
@@ -85,14 +79,6 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
                 <version>3.0.2</version>
-                <configuration>
-                    <finalName>SpecialBot
-                    </finalName>  <!-- Changes the final name of the actual .jar file (Makes it constant so script knows -->
-                    <archive>
-                        <manifestFile>src/main/resources/META_INF/MANIFEST.MF
-                        </manifestFile> <!-- Manifest file path that contains the main class path -->
-                    </archive>
-                </configuration>
             </plugin>
 
             <plugin> <!-- Plugin used to shade dependencies into the .jar file with the source code -->
