@@ -33,6 +33,6 @@ public enum Rank {
     }
 
     public static Rank from(int index) {
-        return values()[index];
+        return values()[index-1];
     }
 }
