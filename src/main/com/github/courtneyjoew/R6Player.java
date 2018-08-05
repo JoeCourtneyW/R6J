@@ -311,7 +311,7 @@ public class R6Player {
      * @return A double representation of the player's Win/Loss ratio in ranked play
      */
     public double getRankedWinLossRatio() {
-        return (ranked_wins * 1.0) / (ranked_losses * 1.0);
+        return (ranked_wins * 1.0) / (ranked_losses + ranked_wins * 1.0);
     }
 
     public String getProfileId() {
@@ -470,6 +470,9 @@ public class R6Player {
         return blind_kills;
     }
 
+    public String getAvatarUrl() {
+        return "https://ubisoft-avatars.akamaized.net/" + profileId + "/default_146_146.png";
+    }
 
     /**
      * Loads <b>ALL</b> players stats into memory
