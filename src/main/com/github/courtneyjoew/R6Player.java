@@ -45,6 +45,10 @@ public class R6Player {
     private int deaths;
     private int wins;
     private int losses;
+    private int ranked_kills;
+    private int ranked_deaths;
+    private int total_ranked_wins;
+    private int total_ranked_losses;
     private int penetration_kills;
     private int bullets_hit;
     private int melee_kills;
@@ -143,6 +147,12 @@ public class R6Player {
         this.kills = getStat(generalStats, stat + "kills" + ":infinite");
         this.wins = getStat(generalStats, stat + "matchwon" + ":infinite");
         this.losses = getStat(generalStats, stat + "matchlost" + ":infinite");
+
+        this.ranked_deaths = getStat(generalStats, stat + "rankedpvp_death" + ":infinite");
+        this.ranked_kills = getStat(generalStats, stat + "rankedpvp_kills" + ":infinite");
+        this.ranked_wins = getStat(generalStats, stat + "rankedpvp_matchwon" + ":infinite");
+        this.ranked_losses = getStat(generalStats, stat + "rankedpvp_matchlost" + ":infinite");
+
         this.penetration_kills = getStat(generalStats, stat + "penetrationkills" + ":infinite");
         this.melee_kills = getStat(generalStats, stat + "meleekills" + ":infinite");
         this.bullets_fired = getStat(generalStats,
@@ -342,11 +352,11 @@ public class R6Player {
         return abandons;
     }
 
-    public int getRankedWins() {
+    public int getSeasonRankedWins() {
         return ranked_wins;
     }
 
-    public int getRankedLosses() {
+    public int getSeasonRankedLosses() {
         return ranked_losses;
     }
 
@@ -387,6 +397,22 @@ public class R6Player {
     }
 
     public int getLosses() {
+        return losses;
+    }
+
+    public int getRankedKills() {
+        return kills;
+    }
+
+    public int getRankedDeaths() {
+        return deaths;
+    }
+
+    public int getTotalRankedWins() {
+        return wins;
+    }
+
+    public int getTotalRankedLosses() {
         return losses;
     }
 
@@ -504,8 +530,10 @@ public class R6Player {
      * @return The int value of the stat, 0 if it doesn't exist
      */
     private int getStat(JsonNode node, String stat_name) {
-        if (node.has(stat_name))
-            return node.get(stat_name).asInt(0);
+        if(node != null)
+            return 0;
+        else if (node.has(stat_name))
+            return node.get(stat_name).asInt();
         else
             return 0;
     }
@@ -542,6 +570,47 @@ public class R6Player {
                     "casualpvp_matchplayed",
                     "casualpvp_matchwon",
                     "casualpvp_timeplayed",
+
+                    "rankedpvp_kills",
+                    "rankedpvp_death",
+                    "rankedpvp_matchlost",
+                    "rankedpvp_matchplayed",
+                    "rankedpvp_matchwon",
+                    "rankedpvp_timeplayed",
+
+                    "secureareapvp_bestscore",
+                    "secureareapvp_matchlost",
+                    "secureareapvp_matchplayed",
+                    "secureareapvp_matchwon",
+                    "secureareapvp_timeplayed",
+
+                    "rescuehostagepvp_bestscore",
+                    "rescuehostagepvp_matchlost",
+                    "rescuehostagepvp_matchplayed",
+                    "rescuehostagepvp_matchwon",
+                    "rescuehostagepvp_timeplayed",
+
+                    "plantbombpvp_bestscore",
+                    "plantbombpvp_matchlost",
+                    "plantbombpvp_matchplayed",
+                    "plantbombpvp_matchwon",
+                    "plantbombpvp_timeplayed",
+
+                    "weapontypepvp_headshot",
+                    "weapontypepvp_bulletfired",
+                    "weapontypepvp_bullethit",
+                    "weapontypepvp_kills",
+
+                    "operatorpvp_kills",
+                    "operatorpvp_death",
+                    "operatorpvp_meleekills",
+                    "operatorpvp_dbno",
+                    "operatorpvp_roundwon",
+                    "operatorpvp_roundlost",
+                    "operatorpvp_timeplayed",
+                    "operatorpvp_totalxp",
+
+
                     "generalpvp_bulletfired",
                     "generalpvp_bullethit",
                     "generalpvp_barricadedeployed",
@@ -559,40 +628,6 @@ public class R6Player {
                     "generalpvp_penetrationkills",
                     "generalpvp_revive",
                     "generalpvp_timeplayed",
-                    "rankedpvp_kills",
-                    "rankedpvp_death",
-                    "rankedpvp_matchlost",
-                    "rankedpvp_matchplayed",
-                    "rankedpvp_matchwon",
-                    "rankedpvp_timeplayed",
-                    "secureareapvp_bestscore",
-                    "secureareapvp_matchlost",
-                    "secureareapvp_matchplayed",
-                    "secureareapvp_matchwon",
-                    "secureareapvp_timeplayed",
-                    "rescuehostagepvp_bestscore",
-                    "rescuehostagepvp_matchlost",
-                    "rescuehostagepvp_matchplayed",
-                    "rescuehostagepvp_matchwon",
-                    "rescuehostagepvp_timeplayed",
-                    "plantbombpvp_bestscore",
-                    "plantbombpvp_matchlost",
-                    "plantbombpvp_matchplayed",
-                    "plantbombpvp_matchwon",
-                    "plantbombpvp_timeplayed",
-                    "weapontypepvp_headshot",
-                    "weapontypepvp_bulletfired",
-                    "weapontypepvp_bullethit",
-                    "weapontypepvp_kills",
-                    "operatorpvp_kills",
-                    "operatorpvp_death",
-                    "operatorpvp_meleekills",
-                    "operatorpvp_dbno",
-                    "operatorpvp_roundwon",
-                    "operatorpvp_roundlost",
-                    "operatorpvp_timeplayed",
-                    "operatorpvp_totalxp",
-
                     "generalpvp_blindkills",
                     "generalpvp_dbno",
                     "generalpvp_dbnoassists",
