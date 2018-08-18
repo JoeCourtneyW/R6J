@@ -25,6 +25,6 @@ hs_err_pid*
 *.xml
 .idea/workspace.xml
 .idea.*
-.idea/.name
 javadocs/*
 target/*
+*.sh

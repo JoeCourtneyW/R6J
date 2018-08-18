@@ -148,10 +148,10 @@ public class R6Player {
         this.wins = getStat(generalStats, stat + "matchwon" + ":infinite");
         this.losses = getStat(generalStats, stat + "matchlost" + ":infinite");
 
-        this.ranked_deaths = getStat(generalStats, stat + "rankedpvp_death" + ":infinite");
-        this.ranked_kills = getStat(generalStats, stat + "rankedpvp_kills" + ":infinite");
-        this.ranked_wins = getStat(generalStats, stat + "rankedpvp_matchwon" + ":infinite");
-        this.ranked_losses = getStat(generalStats, stat + "rankedpvp_matchlost" + ":infinite");
+        this.ranked_deaths = getStat(generalStats, "rankedpvp_death" + ":infinite");
+        this.ranked_kills = getStat(generalStats, "rankedpvp_kills" + ":infinite");
+        this.ranked_wins = getStat(generalStats, "rankedpvp_matchwon" + ":infinite");
+        this.ranked_losses = getStat(generalStats, "rankedpvp_matchlost" + ":infinite");
 
         this.penetration_kills = getStat(generalStats, stat + "penetrationkills" + ":infinite");
         this.melee_kills = getStat(generalStats, stat + "meleekills" + ":infinite");
@@ -401,11 +401,11 @@ public class R6Player {
     }
 
     public int getRankedKills() {
-        return kills;
+        return ranked_kills;
     }
 
     public int getRankedDeaths() {
-        return deaths;
+        return ranked_deaths;
     }
 
     public int getTotalRankedWins() {
@@ -530,7 +530,7 @@ public class R6Player {
      * @return The int value of the stat, 0 if it doesn't exist
      */
     private int getStat(JsonNode node, String stat_name) {
-        if(node != null)
+        if(node == null)
             return 0;
         else if (node.has(stat_name))
             return node.get(stat_name).asInt();
