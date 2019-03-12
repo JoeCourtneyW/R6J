@@ -44,6 +44,11 @@ public class HttpUtil {
         connection.setUseCaches(false);
 
 
+        if(connection.getResponseCode() == 401) {
+            System.out.println("Server sent back unauthorized 401");
+            return null;
+        }
+
         return connection.getInputStream();
     }
 
@@ -77,6 +82,11 @@ public class HttpUtil {
                 connection.getOutputStream());
         wr.writeBytes(payload);
         wr.close();
+
+        if(connection.getResponseCode() == 401) {
+            System.out.println("Server sent back unauthorized 401");
+            return null;
+        }
 
         return connection.getInputStream();
     }

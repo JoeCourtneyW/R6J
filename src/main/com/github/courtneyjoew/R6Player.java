@@ -52,7 +52,7 @@ public class R6Player {
     private int penetration_kills;
     private int bullets_hit;
     private int melee_kills;
-    private int bullets_fired;
+    private int bullets_fired; //Not updated in API
     private int matches_played;
     private int assists;
     private int time_played;
@@ -65,7 +65,7 @@ public class R6Player {
     private int xp;
     private int rappel_breaches;
     private int distance_travelled;
-    private int revives_denied;
+    private int revives_denied; //Not updated in API
     private int dbnos;
     private int gadgets_destroyed;
     private int blind_kills;
@@ -201,7 +201,7 @@ public class R6Player {
                                 getStat(generalStats, operator.getStatisticName("totalxp")),
                                 getStat(generalStats, operator.getStatisticName("timeplayed")),
                                 getStat(generalStats,
-                                        operator.getStatisticName(operator.getGadget()))));
+                                        operator.getGadgetStatisticName())));
             }
         }
     }
@@ -352,11 +352,11 @@ public class R6Player {
         return abandons;
     }
 
-    public int getSeasonRankedWins() {
+    public int getRankedWins() {
         return ranked_wins;
     }
 
-    public int getSeasonRankedLosses() {
+    public int getRankedLosses() {
         return ranked_losses;
     }
 
@@ -406,14 +406,6 @@ public class R6Player {
 
     public int getRankedDeaths() {
         return ranked_deaths;
-    }
-
-    public int getTotalRankedWins() {
-        return wins;
-    }
-
-    public int getTotalRankedLosses() {
-        return losses;
     }
 
     public int getPenetrationKills() {
@@ -501,7 +493,7 @@ public class R6Player {
     }
 
     /**
-     * Loads <b>ALL</b> players stats into memory
+     * Loads <b>ALL</b> player's stats into memory
      */
     private void loadStats() {
         loadXpStats();
@@ -511,7 +503,7 @@ public class R6Player {
         List<String> statsToFetch = new ArrayList<>(Arrays.asList(STATS));
 
         for (Operator op : Operator.values())
-            statsToFetch.add("operatorpvp_" + op.getGadget());
+            statsToFetch.add(op.getGadgetStatisticQuery());
 
         JsonNode stats = fetchStatistics(
                 statsToFetch); //Centralize the server request so we only make one and have it contain the majority of the data
@@ -530,7 +522,7 @@ public class R6Player {
      * @return The int value of the stat, 0 if it doesn't exist
      */
     private int getStat(JsonNode node, String stat_name) {
-        if(node == null)
+        if (node == null)
             return 0;
         else if (node.has(stat_name))
             return node.get(stat_name).asInt();

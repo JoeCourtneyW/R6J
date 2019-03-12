@@ -11,6 +11,7 @@ import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.util.Base64;
 import java.util.Date;
+import java.util.concurrent.Executors;
 
 public class Auth {
 
@@ -26,7 +27,7 @@ public class Auth {
     private String sessionId; //Our session id
     private Instant expiration; //When our session id expires
 
-    private Auth(String auth_token) {
+    private Auth(String auth_token){
         this.auth_token = auth_token;
         ObjectNode post_body = new ObjectMapper().createObjectNode().put("rememberMe", true);
         JsonNode response;
@@ -57,9 +58,16 @@ public class Auth {
     /**
      * Called when the session expires, creates new auth object and grabs session id from it
      */
-    private void updateSession() {
+    public void updateSession(int attempt) {
+        if(attempt > 3) {
+            //Ubisoft servers are obviously being stupid, so wait a little bit before sending another request
+            return;
+        }
         Auth new_auth = new Auth(auth_token);
-
+        if(new_auth.key == null) {
+            updateSession(attempt + 1);
+            return;
+        }
         this.key = new_auth.key;
         this.sessionId = new_auth.sessionId;
         this.expiration = new_auth.expiration;
@@ -77,7 +85,7 @@ public class Auth {
 
         if (expiration.isBefore(Instant.now())) {
             System.out.println("Session expired, attempting to reauthenticate");
-            updateSession();
+            updateSession(1);
         }
 
         try {
