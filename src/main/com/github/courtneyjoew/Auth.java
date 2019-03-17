@@ -11,7 +11,6 @@ import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.util.Base64;
 import java.util.Date;
-import java.util.concurrent.Executors;
 
 public class Auth {
 
@@ -86,14 +85,20 @@ public class Auth {
         if (expiration.isBefore(Instant.now())) {
             System.out.println("Session expired, attempting to reauthenticate");
             updateSession(1);
+            return authorizedGet(url, parameters);
         }
-
         try {
-            return HttpUtil.parse(HttpUtil.get(HttpUtil.connect(url, parameters),
+            JsonNode response = HttpUtil.parse(HttpUtil.get(HttpUtil.connect(url, parameters),
                                                "Authorization", "Ubi_v1 t=" + key,
                                                "Ubi-AppId", RAINBOW_SIX_APPID,
                                                "Ubi-SessionId", sessionId,
                                                "Connection", "keep-alive"));
+            if(response.has("httpCode") && response.get("httpCode").asInt() == 401) {
+                System.out.println("Unauthorized request, attempting to reauthenticate");
+                updateSession(1);
+                return authorizedGet(url, parameters);
+            }
+            return response;
         } catch (IOException e) {
             System.out.println("Failed to process GET request to " + url);
             e.printStackTrace();

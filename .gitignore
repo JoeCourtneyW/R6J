@@ -28,3 +28,4 @@ hs_err_pid*
 javadocs/*
 target/*
 *.sh
+src/test/resources/testCredentials.json
