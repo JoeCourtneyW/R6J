@@ -1,10 +1,11 @@
-package main.com.github.courtneyjoew;
+package main.com.github.joecourtneyw;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import main.com.github.courtneyjoew.declarations.*;
-import main.com.github.courtneyjoew.stats.GamemodeStats;
-import main.com.github.courtneyjoew.stats.OperatorStats;
-import main.com.github.courtneyjoew.stats.WeaponStats;
+import main.com.github.joecourtneyw.declarations.*;
+import main.com.github.joecourtneyw.stats.GamemodeStats;
+import main.com.github.joecourtneyw.stats.OperatorStats;
+import main.com.github.joecourtneyw.stats.WeaponStats;
+import org.pmw.tinylog.Logger;
 
 import java.util.*;
 
@@ -23,14 +24,26 @@ public class R6Player {
     private int lootbox_probability;
 
     private int abandons;
-    private int ranked_wins;
-    private int ranked_losses;
     private int rank;
     private int max_rank;
     private double mmr;
     private double max_mmr;
     private double skill;
     private double skill_stdev;
+    
+    private int ranked_wins;
+    private int ranked_losses;
+    private int ranked_matches_played;
+    private int ranked_kills;
+    private int ranked_deaths;
+    private long ranked_time_played;
+
+    private int casual_wins;
+    private int casual_losses;
+    private int casual_matches_played;
+    private int casual_kills;
+    private int casual_deaths;
+    private long casual_time_played;
 
     private HashMap<Operator, OperatorStats> operators;
     private OperatorStats[] sortedOperators;
@@ -45,10 +58,6 @@ public class R6Player {
     private int deaths;
     private int wins;
     private int losses;
-    private int ranked_kills;
-    private int ranked_deaths;
-    private int total_ranked_wins;
-    private int total_ranked_losses;
     private int penetration_kills;
     private int bullets_hit;
     private int melee_kills;
@@ -116,9 +125,8 @@ public class R6Player {
                 "region_id", region.getName(),
                 "season_id", season + "");
         JsonNode player = response.get("players").get(profileId);
+        Logger.debug(player.toString());
         this.abandons = player.get("abandons").asInt(0);
-        this.ranked_wins = player.get("wins").asInt(0);
-        this.ranked_losses = player.get("losses").asInt(0);
         this.rank = player.get("rank").asInt(0);
         this.max_rank = player.get("max_rank").asInt(0);
         this.mmr = player.get("mmr").asDouble();
@@ -137,6 +145,19 @@ public class R6Player {
     }
 
     /**
+     * Load's the player's casual stats
+     */
+    public void loadCasualStats(JsonNode generalStats) {
+        this.casual_deaths = getStat(generalStats, "casualpvp_death" + ":infinite");
+        this.casual_kills = getStat(generalStats, "casualpvp_kills" + ":infinite");
+        this.casual_wins = getStat(generalStats, "casualpvp_matchwon" + ":infinite");
+        this.casual_losses = getStat(generalStats, "casualpvp_matchlost" + ":infinite");
+        this.casual_matches_played = getStat(generalStats, "casualpvp_matchplayed" + ":infinite");
+        this.casual_time_played = getStat(generalStats, "casualpvp_timeplayed" + ":infinite");
+
+    }
+
+    /**
      * Loads the player's general stats
      *
      * @param generalStats The global stats node fetched on creation
@@ -152,6 +173,8 @@ public class R6Player {
         this.ranked_kills = getStat(generalStats, "rankedpvp_kills" + ":infinite");
         this.ranked_wins = getStat(generalStats, "rankedpvp_matchwon" + ":infinite");
         this.ranked_losses = getStat(generalStats, "rankedpvp_matchlost" + ":infinite");
+        this.ranked_matches_played = getStat(generalStats, "rankedpvp_matchplayed" + ":infinite");
+        this.ranked_time_played = getStat(generalStats, "rankedpvp_timeplayed" + ":infinite");
 
         this.penetration_kills = getStat(generalStats, stat + "penetrationkills" + ":infinite");
         this.melee_kills = getStat(generalStats, stat + "meleekills" + ":infinite");
@@ -213,16 +236,25 @@ public class R6Player {
      */
     private void loadGamemodeStats(JsonNode generalStats) {
         gamemodes = new HashMap<>();
-
         for (Gamemode gamemode : Gamemode.values()) {
             if (generalStats.has(gamemode.getStatisticName("timeplayed"))) {
-                gamemodes.put(gamemode,
-                        new GamemodeStats(gamemode,
-                                getStat(generalStats, gamemode.getStatisticName("matchwon")),
-                                getStat(generalStats, gamemode.getStatisticName("matchlost")),
-                                getStat(generalStats, gamemode.getStatisticName("matchplayed")),
-                                getStat(generalStats, gamemode.getStatisticName("bestscore"))));
+                GamemodeStats gamemodeStats;
+                gamemodeStats = new GamemodeStats(gamemode,
+                        getStat(generalStats, gamemode.getStatisticName("matchwon")),
+                        getStat(generalStats, gamemode.getStatisticName("matchlost")),
+                        getStat(generalStats, gamemode.getStatisticName("matchplayed")),
+                        getStat(generalStats, gamemode.getStatisticName("bestscore")));
 
+                if (gamemode == Gamemode.SECURE_AREA) {
+                    gamemodeStats.setObjectivesCompleted(getStat(generalStats, "generalpvp_servershacked:infinite"));
+                    gamemodeStats.setObjectivesDefended(getStat(generalStats, "generalpvp_serverdefender:infinite"));
+                    gamemodeStats.setObjectivesContested(getStat(generalStats, "generalpvp_serveragression:infinite"));
+                } else if (gamemode == Gamemode.HOSTAGE) {
+                    gamemodeStats.setObjectivesCompleted(getStat(generalStats, "generalpvp_hostagerescue:infinite"));
+                    gamemodeStats.setObjectivesDefended(getStat(generalStats, "generalpvp_hostagedefense:infinite"));
+                }
+
+                gamemodes.put(gamemode, gamemodeStats);
             }
         }
     }
@@ -360,6 +392,22 @@ public class R6Player {
         return ranked_losses;
     }
 
+    public int getRankedKills() {
+        return ranked_kills;
+    }
+
+    public int getRankedDeaths() {
+        return ranked_deaths;
+    }
+
+    public int getRankedMatchesPlayed() {
+        return ranked_matches_played;
+    }
+
+    public long getRankedTimePlayed() {
+        return ranked_time_played;
+    }
+    
     public Rank getRank() {
         return Rank.from(rank);
     }
@@ -398,14 +446,6 @@ public class R6Player {
 
     public int getLosses() {
         return losses;
-    }
-
-    public int getRankedKills() {
-        return ranked_kills;
-    }
-
-    public int getRankedDeaths() {
-        return ranked_deaths;
     }
 
     public int getPenetrationKills() {
@@ -488,6 +528,30 @@ public class R6Player {
         return blind_kills;
     }
 
+    public int getCasualWins() {
+        return casual_wins;
+    }
+
+    public int getCasualLosses() {
+        return casual_losses;
+    }
+
+    public int getCasualMatchesPlayed() {
+        return casual_matches_played;
+    }
+
+    public int getCasualKills() {
+        return casual_kills;
+    }
+
+    public int getCasualDeaths() {
+        return casual_deaths;
+    }
+
+    public long getCasualTimePlayed() {
+        return casual_time_played;
+    }
+
     public String getAvatarUrl() {
         return "https://ubisoft-avatars.akamaized.net/" + profileId + "/default_146_146.png";
     }
@@ -508,6 +572,7 @@ public class R6Player {
         JsonNode stats = fetchStatistics(
                 statsToFetch); //Centralize the server request so we only make one and have it contain the majority of the data
 
+        loadCasualStats(stats);
         loadGeneralStats(stats);
         loadOperatorStats(stats);
         loadGamemodeStats(stats);

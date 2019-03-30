@@ -1,4 +1,4 @@
-package main.com.github.courtneyjoew.declarations;
+package main.com.github.joecourtneyw.declarations;
 
 public enum Region {
     NA("ncsa"),

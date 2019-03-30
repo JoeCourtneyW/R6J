@@ -1,4 +1,4 @@
-package main.com.github.courtneyjoew.declarations;
+package main.com.github.joecourtneyw.declarations;
 
 public enum Operator {
     SMOKE("Smoke", "def", "2:1", "smoke_poisongaskill", "https://ubistatic-a.akamaihd.net/0058/prod/assets/images/badge-smoke.874e9888.png"),

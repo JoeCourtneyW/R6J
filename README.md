@@ -1,14 +1,14 @@
 # R6J
 A JVM based Rainbow Six Siege API Wrapper
 
-Version 1.0.4
+Version 1.1.0
 
 ## Adding R6J to your project
 ```
 <dependency>
   <groupId>com.github.joecourtneyw</groupId>
   <artifactId>R6J</artifactId>
-  <version>1.0.4</version>
+  <version>1.1.0</version>
 </dependency>
 ```
 ## Using the API

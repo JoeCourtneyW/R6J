@@ -2,11 +2,12 @@ package test;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import main.com.github.courtneyjoew.Auth;
-import main.com.github.courtneyjoew.R6J;
-import main.com.github.courtneyjoew.R6Player;
-import main.com.github.courtneyjoew.declarations.Platform;
+import main.com.github.joecourtneyw.Auth;
+import main.com.github.joecourtneyw.R6J;
+import main.com.github.joecourtneyw.R6Player;
+import main.com.github.joecourtneyw.declarations.Platform;
 import org.junit.jupiter.api.Test;
+import org.pmw.tinylog.Logger;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -15,6 +16,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 
 public class ApiTest {
+
 
     @Test()
     public void testApi() throws IOException {

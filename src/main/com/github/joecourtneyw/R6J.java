@@ -1,7 +1,16 @@
-package main.com.github.courtneyjoew;
+package main.com.github.joecourtneyw;
 
-import main.com.github.courtneyjoew.declarations.Platform;
-import main.com.github.courtneyjoew.declarations.Region;
+import main.com.github.joecourtneyw.declarations.Platform;
+import main.com.github.joecourtneyw.declarations.Region;
+import org.pmw.tinylog.Configuration;
+import org.pmw.tinylog.Configurator;
+import org.pmw.tinylog.Level;
+import org.pmw.tinylog.writers.ConsoleWriter;
+import org.pmw.tinylog.writers.FileWriter;
+
+import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class R6J {
 
@@ -10,7 +19,14 @@ public class R6J {
 
 
     public R6J(Auth authPackage) {
+        Date date = new Date();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH-mm-ss") ;
+        Configurator.defaultConfig()
+                .writer(new ConsoleWriter(), Level.DEBUG, "[{date:HH:mm:ss}] {class_name}.{method}() [{level}]: {message}")
+                .addWriter(new FileWriter("logs" + File.separator + dateFormat.format(date) + ".txt"), Level.INFO, "[{date:HH:mm:ss}] {class_name}.{method}() [{level}]: {message}")
+                .activate();
         this.authenticator = authPackage;
+
     }
 
 
@@ -19,7 +35,6 @@ public class R6J {
      *
      * @param playerName The user's current name
      * @param platform   The user's platform
-     *
      * @return An R6Player object containing all the data on the player
      */
     public R6Player getPlayerByName(String playerName, Platform platform) {
@@ -32,7 +47,6 @@ public class R6J {
      * @param playerName The user's current name
      * @param platform   The user's platform
      * @param region     The user's primary region
-     *
      * @return An R6Player object containing all the data on the player
      */
     public R6Player getPlayerByName(String playerName, Platform platform, Region region) {
@@ -44,7 +58,6 @@ public class R6J {
      *
      * @param playerId The user's profile_id
      * @param platform The user's platform
-     *
      * @return An R6Player object containing all the data on the player
      */
     public R6Player getPlayerById(String playerId, Platform platform) {
@@ -57,7 +70,6 @@ public class R6J {
      * @param playerId The user's profile_id
      * @param platform The user's platform
      * @param region   The user's primary region
-     *
      * @return An R6Player object containing all the data on the player
      */
     public R6Player getPlayerById(String playerId, Platform platform, Region region) {
@@ -69,7 +81,6 @@ public class R6J {
      *
      * @param playerName The user's current name
      * @param platform   The user's platform
-     *
      * @return Does the player exist?
      */
     public boolean playerExists(String playerName, Platform platform) {
@@ -81,7 +92,6 @@ public class R6J {
      *
      * @param playerId The user's profile_id
      * @param platform The user's platform
-     *
      * @return Does the player exist?
      */
     public boolean playerIdExists(String playerId, Platform platform) {

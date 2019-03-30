@@ -1,9 +1,10 @@
-package main.com.github.courtneyjoew;
+ package main.com.github.joecourtneyw;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import main.com.github.courtneyjoew.util.HttpUtil;
+import main.com.github.joecourtneyw.util.HttpUtil;
+import org.pmw.tinylog.Logger;
 
 import java.io.IOException;
 import java.text.ParsePosition;
@@ -46,7 +47,7 @@ public class Auth {
             this.sessionId = response.get("sessionId").asText();
             this.expiration = expiration_date.toInstant();
         } catch (IOException e) {
-            System.out.println("Failed to retrieve session token with the given credentials");
+            Logger.error("Failed to retrieve session token with the given credentials");
         }
     }
 
@@ -83,7 +84,7 @@ public class Auth {
     JsonNode authorizedGet(String url, String... parameters) {
 
         if (expiration.isBefore(Instant.now())) {
-            System.out.println("Session expired, attempting to reauthenticate");
+            Logger.info("Session expired, attempting to reauthenticate");
             updateSession(1);
             return authorizedGet(url, parameters);
         }
@@ -94,13 +95,13 @@ public class Auth {
                                                "Ubi-SessionId", sessionId,
                                                "Connection", "keep-alive"));
             if(response.has("httpCode") && response.get("httpCode").asInt() == 401) {
-                System.out.println("Unauthorized request, attempting to reauthenticate");
+                Logger.info("Unauthorized request, attempting to reauthenticate");
                 updateSession(1);
                 return authorizedGet(url, parameters);
             }
             return response;
         } catch (IOException e) {
-            System.out.println("Failed to process GET request to " + url);
+            Logger.warn("Failed to process GET request to " + url);
             e.printStackTrace();
             return null;
         }
@@ -118,7 +119,7 @@ public class Auth {
         try {
             return HttpUtil.parse(HttpUtil.get(HttpUtil.connect(url, parameters)));
         } catch (IOException e) {
-            System.out.println("Failed to process GET request to " + url);
+            Logger.warn("Failed to process GET request to " + url);
             e.printStackTrace();
             return null;
         }
