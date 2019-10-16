@@ -30,7 +30,3 @@ target/*
 *.sh
 src/test/resources/testCredentials.json
 *.txt
-.classpath
-.project
-*.prefs
-.vscode/settings.json
