@@ -30,3 +30,6 @@ target/*
 *.sh
 src/test/resources/testCredentials.json
 *.txt
+*.prefs
+.classpath
+.project
