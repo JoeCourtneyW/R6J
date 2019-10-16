@@ -30,6 +30,7 @@ public class R6Player {
     private double max_mmr;
     private double skill;
     private double skill_stdev;
+    private int last_match_result;
     
     private int ranked_wins;
     private int ranked_losses;
@@ -133,6 +134,7 @@ public class R6Player {
         this.max_mmr = player.get("max_mmr").asDouble();
         this.skill = player.get("skill_mean").asDouble();
         this.skill_stdev = player.get("skill_stdev").asDouble();
+        this.last_match_result = player.get("last_match_result").asInt();
 
     }
 
@@ -430,6 +432,10 @@ public class R6Player {
 
     public double getSkillStandardDeviation() {
         return skill_stdev;
+    }
+    
+    public int getLastMatchResult() {
+        return last_match_result;
     }
 
     public int getKills() {
