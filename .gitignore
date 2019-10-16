@@ -33,3 +33,4 @@ src/test/resources/testCredentials.json
 *.prefs
 .classpath
 .project
+.vscode/settings.json
