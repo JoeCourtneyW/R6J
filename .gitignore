@@ -30,3 +30,4 @@ target/*
 *.sh
 src/test/resources/testCredentials.json
 *.txt
+target/maven-archiver/pom.properties
