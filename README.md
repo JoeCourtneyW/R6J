@@ -6,9 +6,9 @@ Version 1.1.0
 ## Adding R6J to your project
 ```
 <dependency>
-  <groupId>com.github.joecourtneyw</groupId>
+  <groupId>com.github.SergeantSerk</groupId>
   <artifactId>R6J</artifactId>
-  <version>1.1.0</version>
+  <version>master-SNAPSHOT</version>
 </dependency>
 ```
 ## Using the API
