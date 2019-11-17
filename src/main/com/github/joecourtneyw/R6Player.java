@@ -28,8 +28,16 @@ public class R6Player {
     private int max_rank;
     private double mmr;
     private double max_mmr;
-    private double skill;
+    private double skill_mean;
     private double skill_stdev;
+    
+    private int last_match_mmr_change;
+    private int last_match_result;
+    private int last_match_skill_mean_change;
+    private int last_match_skill_stdev_change;
+    private int next_rank_mmr;
+    private int previous_rank_mmr;
+    private int season;
     
     private int ranked_wins;
     private int ranked_losses;
@@ -131,9 +139,15 @@ public class R6Player {
         this.max_rank = player.get("max_rank").asInt(0);
         this.mmr = player.get("mmr").asDouble();
         this.max_mmr = player.get("max_mmr").asDouble();
-        this.skill = player.get("skill_mean").asDouble();
+        this.skill_mean = player.get("skill_mean").asDouble();
         this.skill_stdev = player.get("skill_stdev").asDouble();
-
+        this.last_match_mmr_change = player.get("last_match_mmr_change").asInt(0);
+        this.last_match_result = player.get("last_match_result").asInt(0);
+        this.last_match_skill_mean_change = player.get("last_match_skill_mean_change").asInt(0);
+        this.last_match_skill_stdev_change = player.get("last_match_skill_stdev_change").asInt(0);
+        this.next_rank_mmr = player.get("next_rank_mmr").asInt(0);
+        this.previous_rank_mmr = player.get("previous_rank_mmr").asInt(0);
+        this.season = player.get("season").asInt(0);
     }
 
     /**
@@ -424,12 +438,38 @@ public class R6Player {
         return max_mmr;
     }
 
-    public double getSkill() {
-        return skill;
+    public double getSkillMean() {
+        return skill_mean;
     }
 
     public double getSkillStandardDeviation() {
         return skill_stdev;
+    }
+    
+    public int getLastMatchMmrChange() {
+        return last_match_mmr_change;
+    }
+    
+    public int getLastMatchResult() {
+        return last_match_result;
+    }
+    public int getLastMatchSkillMeanChange() {
+        return last_match_skill_mean_change;
+    }
+    public int getLastMatchSkillStdevChange() {
+        return last_match_skill_stdev_change;
+    }
+    
+    public int getNextRankMmr() {
+        return next_rank_mmr;
+    }
+    
+    public int getPreviousRankMmr() {
+        return previous_rank_mmr;
+    }
+    
+    public int getSeason() {
+        return season;
     }
 
     public int getKills() {
