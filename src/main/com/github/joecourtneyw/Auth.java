@@ -33,7 +33,7 @@ public class Auth {
         JsonNode response;
         try {
             response = HttpUtil.parse(
-                    HttpUtil.post(HttpUtil.connect("https://connect.ubi.com/ubiservices/v2/profiles/sessions"),
+                    HttpUtil.post(HttpUtil.connect("https://public-ubiservices.ubi.com/v3/profiles/sessions"),
                                   post_body.toString(),
                                   "Ubi-AppId", RAINBOW_SIX_APPID,
                                   "Authorization", "Basic " + auth_token));
