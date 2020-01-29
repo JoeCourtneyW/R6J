@@ -763,7 +763,7 @@ public class R6Player {
      */
     static R6Player getPlayer(R6J api, String nameOnPlatform, Platform platform, Region region) {
         JsonNode response = api.getAuthenticator().authorizedGet(
-                "https://connect.ubi.com/ubiservices/v2/profiles",
+                "https://public-ubiservices.ubi.com/v2/profiles",
                 "nameOnPlatform", nameOnPlatform,
                 "platformType", platform.getName());
 
@@ -800,7 +800,7 @@ public class R6Player {
      */
     static R6Player getPlayerById(R6J api, String idOnPlatform, Platform platform, Region region) {
         JsonNode response = api.getAuthenticator().authorizedGet(
-                "https://connect.ubi.com/ubiservices/v2/profiles",
+                "https://public-ubiservices.ubi.com/v2/profiles",
                 "idOnPlatform", idOnPlatform,
                 "platformType", platform.getName());
 
@@ -824,7 +824,7 @@ public class R6Player {
      */
     static boolean playerExists(R6J api, String nameOnPlatform, Platform platform) {
         JsonNode response = api.getAuthenticator().authorizedGet(
-                "https://connect.ubi.com/ubiservices/v2/profiles",
+                "https://public-ubiservices.ubi.com/v2/profiles",
                 "nameOnPlatform", nameOnPlatform,
                 "platformType", platform.getName());
         return response != null && response.get("profiles").size() > 0;
@@ -840,7 +840,7 @@ public class R6Player {
      */
     static boolean playerIdExists(R6J api, String idOnPlatform, Platform platform) {
         JsonNode response = api.getAuthenticator().authorizedGet(
-                "https://connect.ubi.com/ubiservices/v2/profiles",
+                "https://public-ubiservices.ubi.com/v2/profiles",
                 "idOnPlatform", idOnPlatform,
                 "platformType", platform.getName());
         return response != null && response.get("profiles").size() > 0;
