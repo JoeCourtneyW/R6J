@@ -57,7 +57,7 @@ public enum Operator {
     ALIBI("Alibi", "def", "3:F", "deceiver_revealedattackers", "https://ubistatic-a.akamaihd.net/0058/prod/assets/images/badge-alibi.7fba8d33.png"),
 
     MAVERICK("Maverick", "atk", "2:10", "maverick_wallbreached", "https://ubistatic-a.akamaihd.net/0058/prod/assets/images/badge-maverick.7eab7c75e7.png"),
-    CLASH("Finka", "def", "3:10", "clash_sloweddown", "https://ubistatic-a.akamaihd.net/0058/prod/assets/images/badge-clash.133f243da3.png"),
+    CLASH("Clash", "def", "3:10", "clash_sloweddown", "https://ubistatic-a.akamaihd.net/0058/prod/assets/images/badge-clash.133f243da3.png"),
 
     NOMAD("Nomad", "atk", "2:11", "Nomad_Assist", "https://ubistatic-a.akamaihd.net/0058/prod/assets/images/badge-nomad.dbd9a315fa.png"),
     KAID("Kaid", "def", "3:11", "Kaid_Electroclaw_Hatches", "https://ubistatic-a.akamaihd.net/0058/prod/assets/images/badge-kaid.ae2bfa7a5b.png");
